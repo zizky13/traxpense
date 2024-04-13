@@ -44,7 +44,8 @@ export default HomeScreen = () => {
             />
           )}
           keyExtractor={(item) => item.title}
-          numColumns={2}
+          numColumns={3}
+          inverted={true}
         />
       </View>
     </View>
@@ -54,7 +55,6 @@ export default HomeScreen = () => {
 const styles = StyleSheet.create({
   outerContainer: {
     flex: 1,
-    backgroundColor: "red",
   },
 
   summaryContainer: {
@@ -69,7 +69,6 @@ const styles = StyleSheet.create({
   },
 
   expenseListContainer: {
-    backgroundColor: "yellow",
     flex: 1,
   },
 });

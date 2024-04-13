@@ -1,4 +1,5 @@
 import { View, Text, Pressable, StyleSheet, Platform } from "react-native";
+import { GlobalStyles } from "../constants/GlobalStyles";
 
 export default CatogryGrid = ({ onPress, title, color }) => {
     return (
@@ -22,9 +23,9 @@ export default CatogryGrid = ({ onPress, title, color }) => {
 const styles = StyleSheet.create({
   gridItem: {
     flex: 1,
-    margin: 12,
+    margin: 8,
     height: 150,
-    borderRadius: 8,
+    borderRadius: 10,
     elevation: 4,
     backgroundColor: "white",
     shadowColor: "black",
@@ -41,7 +42,7 @@ const styles = StyleSheet.create({
   },
   innerContainer: {
     flex: 1,
-    padding: 16,
+    padding: 12,
     borderRadius: 8,
     justifyContent: "center",
     alignItems: "center",
@@ -49,5 +50,6 @@ const styles = StyleSheet.create({
   title: {
     fontFamily: "Inter-Regular",
     fontSize: 13,
+    color: GlobalStyles.colors.neutral900,
   },
 });

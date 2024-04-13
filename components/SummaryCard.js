@@ -3,6 +3,7 @@ import Cards from "./Cards";
 import { Text, StyleSheet } from "react-native";
 import { ExpenseContext } from "../store/expense-context";
 
+//DATA NEEDED: total income, total outcome, starting balance, end balance
 
 export default SummaryCard = ({ incomeSummary, outcomeSummary }) => {
   const expenseCtx = useContext(ExpenseContext);
