@@ -1,9 +1,10 @@
 import { StatusBar } from "expo-status-bar";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
+import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { NavigationContainer } from "@react-navigation/native";
 import { useState, useEffect } from "react";
-import * as SplashScreen from "expo-splash-screen";
 import { LoadFonts } from "./assets/fonts/LoadFonts";
+import * as SplashScreen from "expo-splash-screen";
 import AddExpenseScreen from "./screens/AddExpenseScreen";
 import DetailScreen from "./screens/DetailScreen";
 import HomeScreen from "./screens/HomeScreen";
@@ -11,6 +12,18 @@ import StartScreen from "./screens/StartScreen";
 import ExpenseContextProvider from "./store/expense-context";
 
 const Stack = createNativeStackNavigator();
+const Tab = createBottomTabNavigator();
+
+const NewHome = () => {
+  return (
+    <Tab.Navigator screenOptions={{
+      headerShown: false
+      }}>
+      <Tab.Screen name="Expense" component={HomeScreen} />
+      <Tab.Screen name="Income" component={HomeScreen} />
+    </Tab.Navigator>
+  );
+}
 
 export default function App() {
   const [appIsReady, setAppIsReady] = useState(false);
@@ -40,15 +53,15 @@ export default function App() {
 
   return (
     <ExpenseContextProvider>
-    <NavigationContainer>
-      <StatusBar style="auto" />
-      <Stack.Navigator>
-        <Stack.Screen name="Start" component={StartScreen} />
-        <Stack.Screen name="Home" component={HomeScreen} />
-        <Stack.Screen name="Detail" component={DetailScreen} />
-        <Stack.Screen name="AddExpense" component={AddExpenseScreen} />
-      </Stack.Navigator>
-    </NavigationContainer>
+      <NavigationContainer>
+        <StatusBar style="auto" />
+        <Stack.Navigator>
+          <Stack.Screen name="Start" component={StartScreen} />
+          <Stack.Screen name="Home" component={NewHome} />
+          <Stack.Screen name="Detail" component={DetailScreen} />
+          <Stack.Screen name="AddExpense" component={AddExpenseScreen} />
+        </Stack.Navigator>
+      </NavigationContainer>
     </ExpenseContextProvider>
   );
 }

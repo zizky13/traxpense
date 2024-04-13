@@ -4,18 +4,30 @@ import { useContext } from "react";
 import SummaryCard from "../components/SummaryCard";
 import { ExpenseContext } from "../store/expense-context";
 import CategoryGrid from "../components/CategoryGrid";
-import { useNavigation } from "@react-navigation/native";
-
-
+import { useNavigation, useRoute } from "@react-navigation/native";
 
 export default HomeScreen = () => {
   const navigation = useNavigation();
+  const route = useRoute();
   const expenseCtx = useContext(ExpenseContext);
-  const categoriesData = expenseCtx.expenses[1];
-  const data = categoriesData.categories.map((category, index) => ({ //map through the categories
-    title: category, //return an object with title and color
-    color: categoriesData.categoriesColor[index],
-  }));
+
+  let categoriesData;
+  let data = [];
+  if (route.name === "Income") {
+    categoriesData = expenseCtx.expenses[2]; // or whatever index corresponds to income data
+    data = categoriesData.incomes.map((income, index) => ({
+      title: income,
+      color: categoriesData.incomesColor[index],
+    }));
+  } else if (route.name === "Expense") {
+    categoriesData = expenseCtx.expenses[1]; // or whatever index corresponds to expense data
+    data = categoriesData.categories.map((category, index) => ({
+      title: category,
+      color: categoriesData.categoriesColor[index],
+    }));
+  }
+
+  
 
   return (
     <View style={styles.outerContainer}>
@@ -44,7 +56,7 @@ export default HomeScreen = () => {
             />
           )}
           keyExtractor={(item) => item.title}
-          numColumns={3}
+          numColumns={2}
           inverted={true}
         />
       </View>
