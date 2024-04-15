@@ -5,11 +5,23 @@ import SummaryCard from "../components/SummaryCard";
 import { ExpenseContext } from "../store/expense-context";
 import CategoryGrid from "../components/CategoryGrid";
 import { useNavigation, useRoute } from "@react-navigation/native";
+import { signOut } from "firebase/auth";
+import { auth } from "../firebase"
 
 export default HomeScreen = () => {
   const navigation = useNavigation();
   const route = useRoute();
   const expenseCtx = useContext(ExpenseContext);
+  
+  const signOutUser = async () => {
+    try {
+      await signOut(auth);
+      alert("User signed out successfully!");
+      navigation.navigate("Start");
+    } catch (error) {
+      alert(error.message);
+    }
+  };
 
   let categoriesData;
   let data = [];
@@ -34,6 +46,7 @@ export default HomeScreen = () => {
       <View style={styles.summaryContainer}>
         <SummaryCard />
         <View style={styles.innerSummaryContainer}>
+          <CategoryGrid title="Sign Out" color="white" onPress={signOutUser} />
           <Cards>
             <Text>Income Summary</Text>
           </Cards>
