@@ -6,6 +6,7 @@ import {
   getReactNativePersistence,
 } from "firebase/auth";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { getDatabase } from "firebase/database";
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
 
@@ -19,9 +20,12 @@ const firebaseConfig = {
   messagingSenderId: "754301787382",
   appId: "1:754301787382:web:c4748297564e094ab820d7",
   measurementId: "G-PPGZYGH2WP",
+  databaseURL:
+    "https://traxpense-6ba04-default-rtdb.asia-southeast1.firebasedatabase.app/",
 };
 
 export const app = initializeApp(firebaseConfig);
 export const auth = initializeAuth(app, {
   persistence: getReactNativePersistence(AsyncStorage),
 });
+export const db = getDatabase(app);

@@ -125,7 +125,7 @@ export const ExpenseContext = createContext({
   incomes: [],
   incomesColor: [],
   addBalance: (amount) => {},
-  addExpense: ({ description, amount, date }) => {},
+  addExpense: ({ description, amount, date, category }) => {},
   deleteExpense: (id) => {},
   editExpense: (id, { description, amount, date }) => {},
 });
@@ -186,7 +186,7 @@ export default ExpensesContextProvider = ({ children }) => {
     addExpense,
     deleteExpense,
     editExpense,
-    addBalance,
+    addBalance
   };
 
   return (

@@ -47,6 +47,7 @@ export default HomeScreen = () => {
         <SummaryCard />
         <View style={styles.innerSummaryContainer}>
           <CategoryGrid title="Sign Out" color="white" onPress={signOutUser} />
+          <CategoryGrid title="Add expense" color="white" onPress={() => navigation.navigate("AddExpense")} />
           <Cards>
             <Text>Income Summary</Text>
           </Cards>
