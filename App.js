@@ -10,6 +10,7 @@ import DetailScreen from "./screens/DetailScreen";
 import HomeScreen from "./screens/HomeScreen";
 import StartScreen from "./screens/StartScreen";
 import ExpenseContextProvider from "./store/expense-context";
+import SignUpScreen from "./screens/SignUpScreen";
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -60,6 +61,7 @@ export default function App() {
           <Stack.Screen name="Home" component={NewHome} />
           <Stack.Screen name="Detail" component={DetailScreen} />
           <Stack.Screen name="AddExpense" component={AddExpenseScreen} />
+          <Stack.Screen name="SignUp" component={SignUpScreen} />
         </Stack.Navigator>
       </NavigationContainer>
     </ExpenseContextProvider>

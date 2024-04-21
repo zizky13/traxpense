@@ -7,7 +7,7 @@ export default DetailScreen = ({ route }) => {
     const { category } = route.params;
     const expenseCtx = useContext(ExpenseContext);
     const renderedData = expenseCtx.expenses.filter(
-      (item, index) => index > 1 && item.category === category
+      (item, index) => index > 2 && item.category === category
     );
 
     return (

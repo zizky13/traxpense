@@ -1,44 +1,39 @@
 import { Text, View, StyleSheet, TextInput } from "react-native";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useContext } from "react";
 import MyButton from "../components/MyButton";
 import { GlobalStyles } from "../constants/GlobalStyles";
 import { useNavigation } from "@react-navigation/native";
 import "../firebase";
 import {
-  createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
 } from "firebase/auth";
 import { onAuthStateChanged } from "firebase/auth";
 import { auth } from "../firebase";
+import { ExpenseContext } from "../store/expense-context";
 
 export default StartScreen = () => {
   const navigation = useNavigation();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const expenseCtx = useContext(ExpenseContext);
 
-  onAuthStateChanged(auth, (user) => {
-    if (user) {
-      const uid = user.uid;
-      console.log("User is signed in with uid: ", uid);
-      navigation.navigate("Home");
-    }
-  });
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      if (user) {
+        expenseCtx.saveUserId(user.uid);
+        navigation.navigate("Home");
+      }
+    });
+    console.log("User is signed in with uid: ", expenseCtx.userId);
+    // Clean up the listener when the component unmounts
+    return unsubscribe;
+  }, []);
 
   const login = (email, password) => {
     signInWithEmailAndPassword(auth, email, password)
       .then((userCredential) => {
         alert("User signed in successfully!");
-      })
-      .catch((error) => {
-        alert(error.message);
-      });
-  };
-
-  const createUser = (email, password) => {
-    createUserWithEmailAndPassword(auth, email, password)
-      .then((userCredential) => {
         const user = userCredential.user;
-        alert("User created successfully!");
       })
       .catch((error) => {
         alert(error.message);
@@ -66,10 +61,11 @@ export default StartScreen = () => {
         onChangeText={setPassword}
         secureTextEntry={true}
       />
+      <Text>Don't have account? Register here:</Text>
       <MyButton
         style={styles.button}
         title="Sign In"
-        onPress={() => createUser(email, password)}
+        onPress={() => navigation.navigate("SignUp")}
       />
       <MyButton
         style={styles.button}
