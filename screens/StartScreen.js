@@ -1,4 +1,4 @@
-import { Text, View, StyleSheet, TextInput } from "react-native";
+import { Text, View, StyleSheet, TextInput, TouchableWithoutFeedback, Keyboard } from "react-native";
 import { useEffect, useState, useContext } from "react";
 import MyButton from "../components/MyButton";
 import { GlobalStyles } from "../constants/GlobalStyles";
@@ -45,6 +45,7 @@ export default StartScreen = () => {
   }, [navigation]);
 
   return (
+    <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
     <View style={styles.container}>
       <Text style={styles.titleText}>Traxpense</Text>
       <Text style={styles.subtitleText}>Manage your expense wisely</Text>
@@ -73,6 +74,7 @@ export default StartScreen = () => {
         onPress={() => login(email, password)}
       />
     </View>
+    </TouchableWithoutFeedback>
   );
 };
 
@@ -105,6 +107,6 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     padding: 8,
     margin: 8,
-    minWidth: 150,
+    minWidth: 300,
   },
 });
