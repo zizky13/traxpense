@@ -20,7 +20,6 @@ export default StartScreen = () => {
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
       if (user) {
-        expenseCtx.saveUserId(user.uid);
         navigation.navigate("Home");
       }
     });

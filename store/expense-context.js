@@ -47,29 +47,7 @@ const DUMMY_EXPENSES = [
       GlobalStyles.colors.neutral300,
       GlobalStyles.colors.accent200,
     ],
-  },
-  { userId: "u1" },
-  {
-    id: "e1",
-    description: "Toilet Paper",
-    amount: 94.12,
-    time: new Date(2024, 7, 14),
-    category: "Utilities",
-  },
-  {
-    id: "e2",
-    description: "New TV",
-    amount: 799.49,
-    time: new Date(2024, 2, 12),
-    category: "Personal",
-  },
-  {
-    id: "e3",
-    description: "Car Insurance",
-    amount: 294.67,
-    time: new Date(2024, 2, 28),
-    category: "Utilities",
-  },
+  }
 ];
 
 export const ExpenseContext = createContext({
@@ -90,15 +68,6 @@ export const ExpenseContext = createContext({
 const writeUserId = (userId) => {
   userId = userId;
 };
-
-// const addNewExpensetoDb = (userId, expenseData) => {
-//   push(ref(db, "users/" + userId + "/expenses"), {
-//     description: expenseData.description,
-//     amount: expenseData.amount,
-//     category: expenseData.category,
-//   });
-// };
-
 
 const expensesReducer = (state, action) => {
   switch (action.type) {

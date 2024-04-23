@@ -6,13 +6,13 @@ import { ExpenseContext } from "../store/expense-context";
 import CategoryGrid from "../components/CategoryGrid";
 import { useNavigation, useRoute } from "@react-navigation/native";
 import { signOut } from "firebase/auth";
-import { auth } from "../firebase"
+import { auth } from "../firebase";
 
 export default HomeScreen = () => {
   const navigation = useNavigation();
   const route = useRoute();
   const expenseCtx = useContext(ExpenseContext);
-  
+
   const signOutUser = async () => {
     try {
       await signOut(auth);
@@ -25,21 +25,25 @@ export default HomeScreen = () => {
 
   let categoriesData;
   let data = [];
+  let add;
+  let path;
   if (route.name === "Income") {
     categoriesData = expenseCtx.expenses[2]; // or whatever index corresponds to income data
+    add = "Add Income";
+    path = "AddIncome";
     data = categoriesData.incomes.map((income, index) => ({
       title: income,
       color: categoriesData.incomesColor[index],
     }));
   } else if (route.name === "Expense") {
     categoriesData = expenseCtx.expenses[1]; // or whatever index corresponds to expense data
+    add = "Add Expense";
+    path = "AddExpense";
     data = categoriesData.categories.map((category, index) => ({
       title: category,
       color: categoriesData.categoriesColor[index],
     }));
   }
-
-  
 
   return (
     <View style={styles.outerContainer}>
@@ -47,7 +51,11 @@ export default HomeScreen = () => {
         <SummaryCard />
         <View style={styles.innerSummaryContainer}>
           <CategoryGrid title="Sign Out" color="white" onPress={signOutUser} />
-          <CategoryGrid title="Add expense" color="white" onPress={() => navigation.navigate("AddExpense")} />
+          <CategoryGrid
+            title={add}
+            color="white"
+            onPress={() => navigation.navigate(path)}
+          />
           <Cards>
             <Text>Income Summary</Text>
           </Cards>

@@ -8,6 +8,7 @@ import {
   KeyboardAvoidingView,
   Platform,
   ScrollView,
+  Alert,
 } from "react-native";
 import { useReducer } from "react";
 import { createUserWithEmailAndPassword } from "firebase/auth";
@@ -73,7 +74,12 @@ export default SignUpScreen = () => {
           expenses: "",
         });
         
-        alert("User created successfully!");
+        Alert.alert(
+          "Success",
+          "User created successfully!",
+          [{ text: "OK", onPress: () => navigation.goBack() }],
+          { cancelable: false }
+        );
       })
       .catch((error) => {
         alert(error.message);
@@ -148,7 +154,6 @@ export default SignUpScreen = () => {
             <TextInput
               style={styles.input}
               placeholder="Enter your email here"
-              value={state.email}
               onChangeText={emailHandler}
             />
             {state.emailValidMessage !== "" && (
@@ -157,7 +162,6 @@ export default SignUpScreen = () => {
             <TextInput
               style={styles.input}
               placeholder="Enter your password here"
-              value={state.password}
               onChangeText={passwordHandler}
               secureTextEntry
             />
@@ -167,7 +171,6 @@ export default SignUpScreen = () => {
             <TextInput
               style={styles.input}
               placeholder="Confirm your password here"
-              value={state.confirmPassword}
               onChangeText={confirmPasswordHandler}
               secureTextEntry
             />
@@ -175,14 +178,12 @@ export default SignUpScreen = () => {
             <TextInput
               style={styles.input}
               placeholder="Enter your username here"
-              value={state.usename}
               onChangeText={usernameHandler}
             />
             {state.usernameValidMessage !== "" && <Text>{state.usernameValidMessage}</Text>}
             <TextInput
               style={styles.input}
               placeholder="Enter your balance here"
-              value={state.balance}
               onChangeText={balanceHandler}
               keyboardType="numeric"
             />

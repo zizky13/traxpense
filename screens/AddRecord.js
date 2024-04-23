@@ -1,21 +1,20 @@
 import { Text, View, SafeAreaView, TextInput, StyleSheet } from "react-native";
-import { useState, useContext, useEffect } from "react";
+import { useState } from "react";
 import { DateTimePickerAndroid } from "@react-native-community/datetimepicker";
 import MyButton from "../components/MyButton";
 import { GlobalStyles } from "../constants/GlobalStyles";
-import { ExpenseContext } from "../store/expense-context";
 import { Picker } from "@react-native-picker/picker";
-import { ref, onValue, push, set } from "firebase/database";
-import { db } from "../firebase";
+import { ref, push } from "firebase/database";
+import { auth, db } from "../firebase";
+import { useRoute } from "@react-navigation/native";
 
-export default AddExpenseScreen = ({ navigation }) => {
+export default AddRecord = () => {
   const [date, setDate] = useState(new Date());
   const [amount, setAmount] = useState(0);
   const [description, setDescription] = useState("");
   const [category, setCategory] = useState("");
-  const exspenseCtx = useContext(ExpenseContext);
-  const userId = exspenseCtx.userId;
-  const expenseRef = ref(db, "users/" + userId + "/expenses");
+  const route = useRoute();
+  const userId = auth.currentUser?.uid;
 
   const onChange = (event, selectedDate) => {
     const currentDate = selectedDate;
@@ -63,21 +62,33 @@ export default AddExpenseScreen = ({ navigation }) => {
         placeholder="Description"
         onChangeText={setDescription}
       />
-      <Picker selectedValue={category} onValueChange={setCategory}>
-        <Picker.Item label="Select a category" value="" />
-        <Picker.Item label="Food" value="Food" />
-        <Picker.Item label="Gifts" value="Gifts" />
-        <Picker.Item label="Health/medical" value="Health/medical" />
-        <Picker.Item label="Home" value="Home" />
-        <Picker.Item label="Transportation" value="Transportation" />
-        <Picker.Item label="Personal" value="Personal" />
-        <Picker.Item label="Pets" value="Pets" />
-        <Picker.Item label="Utilities" value="Utilities" />
-        <Picker.Item label="Travel" value="Travel" />
-        <Picker.Item label="Debt" value="Debt" />
-        <Picker.Item label="Loan" value="Loan" />
-        <Picker.Item label="Others" value="Others" />
-      </Picker>
+      {route.name === "AddExpense" && (
+        <Picker selectedValue={category} onValueChange={setCategory}>
+          <Picker.Item label="Select a category" value="" />
+          <Picker.Item label="Food" value="Food" />
+          <Picker.Item label="Gifts" value="Gifts" />
+          <Picker.Item label="Health/medical" value="Health/medical" />
+          <Picker.Item label="Home" value="Home" />
+          <Picker.Item label="Transportation" value="Transportation" />
+          <Picker.Item label="Personal" value="Personal" />
+          <Picker.Item label="Pets" value="Pets" />
+          <Picker.Item label="Utilities" value="Utilities" />
+          <Picker.Item label="Travel" value="Travel" />
+          <Picker.Item label="Debt" value="Debt" />
+          <Picker.Item label="Loan" value="Loan" />
+          <Picker.Item label="Others" value="Others" />
+        </Picker>
+      )}
+      {route.name === "AddIncome" && (
+        <Picker selectedValue={category} onValueChange={setCategory}>
+          <Picker.Item label="Add new income" value="Add new income" />
+          <Picker.Item label="Savings" value="Savings" />
+          <Picker.Item label="Paycheck" value="Paycheck" />
+          <Picker.Item label="Bonus" value="Bonus" />
+          <Picker.Item label="Interest" value="Interest" />
+        </Picker>
+      )}
+
       <View style={styles.dateSelector}>
         <Text>Date: {date ? date.toLocaleString() : "No date selected"}</Text>
         <MyButton
@@ -90,6 +101,8 @@ export default AddExpenseScreen = ({ navigation }) => {
     </SafeAreaView>
   );
 };
+
+
 
 const styles = StyleSheet.create({
   container: {

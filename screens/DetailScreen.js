@@ -1,29 +1,40 @@
-import { View, Text, FlatList } from 'react-native';
-import { useContext } from 'react';
-import { ExpenseContext } from '../store/expense-context';
-import Cards from '../components/Cards';
+import { View, Text, FlatList } from "react-native";
+import { useState, useEffect } from "react";
+import Cards from "../components/Cards";
+import { auth, db } from "../firebase";
+import { ref, onValue } from "firebase/database";
 
 export default DetailScreen = ({ route }) => {
-    const { category } = route.params;
-    const expenseCtx = useContext(ExpenseContext);
-    const renderedData = expenseCtx.expenses.filter(
-      (item, index) => index > 2 && item.category === category
-    );
+  const { category } = route.params;
+  const [expenses, setExpenses] = useState([]);
+  const userId = auth.currentUser?.uid;
 
-    return (
-      <View>
-        <Text>{category} Screen</Text>
-        <FlatList
-          data={renderedData}
-          renderItem={({ item }) => (
-            <Cards>
-              <Text>{item.time.getDate()}</Text>
-              <Text>{item.amount}</Text>
-              <Text>{item.description}</Text>
-            </Cards>
-          )}
-          keyExtractor={(item) => item.id}
-        />
-      </View>
-    );
-}
+  useEffect(() => {
+    const expensesRef = ref(db, "users/" + userId + "/expenses");
+    onValue(expensesRef, (snapshot) => {
+      const data = snapshot.val();
+      const expensesArray = Object.keys(data).map((key) => ({
+        id: key,
+        ...data[key],
+      }));
+      setExpenses(expensesArray);
+    });
+  }, []);
+  const renderedData = expenses.filter((item) => item.category === category);
+
+  return (
+    <View>
+      <Text>{category} Screen</Text>
+      <FlatList
+        data={renderedData}
+        renderItem={({ item }) => (
+          <Cards>
+            <Text>{item.amount}</Text>
+            <Text>{item.description}</Text>
+          </Cards>
+        )}
+        keyExtractor={(item) => item.id}
+      />
+    </View>
+  );
+};
