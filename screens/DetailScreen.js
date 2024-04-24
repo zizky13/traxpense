@@ -3,11 +3,14 @@ import { useState, useEffect } from "react";
 import Cards from "../components/Cards";
 import { auth, db } from "../firebase";
 import { ref, onValue } from "firebase/database";
+import MyButton from "../components/MyButton";
+import { useNavigation, useRoute } from "@react-navigation/native";
 
 export default DetailScreen = ({ route }) => {
-  const { category } = route.params;
+  const { category, path } = route.params;
   const [expenses, setExpenses] = useState([]);
   const userId = auth.currentUser?.uid;
+  const navigation = useNavigation();
 
   useEffect(() => {
     const expensesRef = ref(db, "users/" + userId + "/expenses");
@@ -21,10 +24,19 @@ export default DetailScreen = ({ route }) => {
     });
   }, []);
   const renderedData = expenses.filter((item) => item.category === category);
+  
+  const addScreenHandler = () => {
+    if (path === "AddIncome") {
+      navigation.navigate("AddIncome");
+    } else if (path === "AddExpense") {
+      navigation.navigate("AddExpense");
+    }
+  }
 
   return (
     <View>
       <Text>{category} Screen</Text>
+      <MyButton title="Add Record" onPress={addScreenHandler} />
       <FlatList
         data={renderedData}
         renderItem={({ item }) => (

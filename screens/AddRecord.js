@@ -55,7 +55,8 @@ export default AddRecord = () => {
       <TextInput
         style={styles.textInput}
         placeholder="Amount"
-        onChangeText={setAmount}
+        onChangeText={(text) => setAmount(Number(text))}
+        keyboardType="numeric"
       />
       <TextInput
         style={styles.textInput}

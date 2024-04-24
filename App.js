@@ -58,11 +58,11 @@ export default function App() {
         <StatusBar style="auto" />
         <Stack.Navigator>
           <Stack.Screen name="Start" component={StartScreen} />
-          <Stack.Screen name="Home" component={NewHome} />
+          <Stack.Screen name="Home" component={NewHome} options={{headerShown: false}}/>
           <Stack.Screen name="Detail" component={DetailScreen} />
           <Stack.Screen name="AddExpense" component={AddRecord} />
           <Stack.Screen name="AddIncome" component={AddRecord} />
-          <Stack.Screen name="SignUp" component={SignUpScreen} />
+          <Stack.Screen name="SignUp" component={SignUpScreen} options={{headerShown: false}}/>
         </Stack.Navigator>
       </NavigationContainer>
     </ExpenseContextProvider>

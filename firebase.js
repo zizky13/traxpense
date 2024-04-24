@@ -1,17 +1,12 @@
-// Import the functions you need from the SDKs you need
 import { initializeApp } from "firebase/app";
 import {
-  getAuth,
   initializeAuth,
   getReactNativePersistence,
 } from "firebase/auth";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { getDatabase } from "firebase/database";
-// TODO: Add SDKs for Firebase products that you want to use
-// https://firebase.google.com/docs/web/setup#available-libraries
+import { getDatabase, onValue } from "firebase/database";
+import { useEffect, useState } from "react";
 
-// Your web app's Firebase configuration
-// For Firebase JS SDK v7.20.0 and later, measurementId is optional
 const firebaseConfig = {
   apiKey: "AIzaSyCDho8TGp_u5XREaD-A8xlIpnT4waUK9Ek",
   authDomain: "traxpense-6ba04.firebaseapp.com",
@@ -29,3 +24,18 @@ export const auth = initializeAuth(app, {
   persistence: getReactNativePersistence(AsyncStorage),
 });
 export const db = getDatabase(app);
+export function useDatabaseData(dbref) {
+  const [databaseData, setDatabaseData] = useState({});
+
+  useEffect(() => {
+    const unsubscribe = onValue(dbref, (snapshot) => {
+      const data = snapshot.val();
+      setDatabaseData(data);
+    });
+
+    // Cleanup function
+    return () => unsubscribe();
+  }, []);
+
+  return databaseData;
+}

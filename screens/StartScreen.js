@@ -45,34 +45,37 @@ export default StartScreen = () => {
 
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-    <View style={styles.container}>
-      <Text style={styles.titleText}>Traxpense</Text>
-      <Text style={styles.subtitleText}>Manage your expense wisely</Text>
-      <TextInput
-        style={styles.input}
-        placeholder="Email"
-        value={email}
-        onChangeText={setEmail}
-      />
-      <TextInput
-        style={styles.input}
-        placeholder="Password"
-        value={password}
-        onChangeText={setPassword}
-        secureTextEntry={true}
-      />
-      <Text>Don't have account? Register here:</Text>
-      <MyButton
-        style={styles.button}
-        title="Sign In"
-        onPress={() => navigation.navigate("SignUp")}
-      />
-      <MyButton
-        style={styles.button}
-        title="Get Started!"
-        onPress={() => login(email, password)}
-      />
-    </View>
+      <View style={styles.container}>
+        <Text style={styles.titleText}>Traxpense</Text>
+        <Text style={styles.subtitleText}>Manage your expense wisely</Text>
+        <TextInput
+          style={styles.input}
+          placeholder="Email"
+          value={email}
+          onChangeText={setEmail}
+          keyboardType="email-address"
+        />
+        <TextInput
+          style={styles.input}
+          placeholder="Password"
+          value={password}
+          onChangeText={setPassword}
+          secureTextEntry={true}
+        />
+        <MyButton
+          style={styles.button}
+          optionalColor={GlobalStyles.colors.primary500}
+          title="Login"
+          onPress={() => login(email, password)}
+        />
+        <Text>Or</Text>
+        <MyButton
+          style={styles.button}
+          optionalColor={GlobalStyles.colors.accent400}
+          title="Sign Up"
+          onPress={() => navigation.navigate("SignUp")}
+        />
+      </View>
     </TouchableWithoutFeedback>
   );
 };
@@ -87,8 +90,7 @@ const styles = StyleSheet.create({
 
   button: {
     minWidth: 100,
-    margin: 10,
-    marginTop: 20,
+    margin: 8,
   },
 
   titleText: {
