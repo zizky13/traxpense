@@ -1,5 +1,8 @@
 import { createContext, useReducer } from "react";
 import { GlobalStyles } from "../constants/GlobalStyles";
+import { db } from "../firebase";
+import { push, ref } from "firebase/database";
+import { set } from "firebase/database";
 
 const DUMMY_EXPENSES = [
   { balance: 1480000 },
@@ -44,102 +47,39 @@ const DUMMY_EXPENSES = [
       GlobalStyles.colors.neutral300,
       GlobalStyles.colors.accent200,
     ],
-  },
-  {
-    id: "e1",
-    description: "Toilet Paper",
-    amount: 94.12,
-    time: new Date(2024, 7, 14),
-    category: "Utilities",
-  },
-  {
-    id: "e2",
-    description: "New TV",
-    amount: 799.49,
-    time: new Date(2024, 2, 12),
-    category: "Personal",
-  },
-  {
-    id: "e3",
-    description: "Car Insurance",
-    amount: 294.67,
-    time: new Date(2024, 2, 28),
-    category: "Utilities",
-  },
-  {
-    id: "e4",
-    description: "New Desk (Wooden)",
-    amount: 450,
-    time: new Date(2024, 5, 12),
-    category: "Home",
-  },
-  {
-    id: "e5",
-    description: "New Desk (Wooden)",
-    amount: 450,
-    time: new Date(2024, 5, 12),
-    category: "Home",
-  },
-  {
-    id: "e6",
-    description: "Toilet Paper",
-    amount: 94.12,
-    time: new Date(2024, 7, 14),
-    category: "Utilities",
-  },
-  {
-    id: "e7",
-    description: "New TV",
-    amount: 799.49,
-    time: new Date(2024, 2, 12),
-    category: "Personal",
-  },
-  {
-    id: "e8",
-    description: "Car Insurance",
-    amount: 294.67,
-    time: new Date(2024, 2, 28),
-    category: "Utilities",
-  },
-  {
-    id: "e9",
-    description: "New Desk (Wooden)",
-    amount: 450,
-    time: new Date(2024, 5, 12),
-    category: "Furniture",
-  },
-  {
-    id: "e11",
-    description: "Tahu Bakso",
-    amount: 500000,
-    time: new Date(2024, 5, 12),
-    category: "Food",
-  },
+  }
 ];
 
 export const ExpenseContext = createContext({
-  expenses: [],
-  balance: 0,
-  categories: [],
-  categoriesColor: [],
-  incomes: [],
-  incomesColor: [],
+  expenses: [], //db
+  balance: 0, //db
+  categories: [], //local
+  categoriesColor: [], //local
+  incomes: [], //local
+  incomesColor: [], //local
+  userId: "", //local
+  saveUserId: (userId) => {},
   addBalance: (amount) => {},
-  addExpense: ({ description, amount, date, category }) => {},
+  addExpense: ({ description, amount, time, category }) => {},
   deleteExpense: (id) => {},
   editExpense: (id, { description, amount, date }) => {},
 });
+
+const writeUserId = (userId) => {
+  userId = userId;
+};
 
 const expensesReducer = (state, action) => {
   switch (action.type) {
     case "ADD_BALANCE":
       return { ...state, balance: state.balance + action.payload };
     case "ADD":
-      const newId = Math.random().toString();
-      return {
-        ...state,
-        expenses: [...state.expenses, { id: newId, ...action.payload }],
-      };
+      // addNewExpensetoDb(state.userId, action.payload);
+      return;
+      // return {
+      //   ...state,
+      //   expenses: [...state.expenses, { id: newId, ...action.payload }],
+      // };
     case "EDIT":
       const expenseIndex = state.expenses.findIndex(
         (expense) => expense.id === action.payload.id
@@ -153,10 +93,14 @@ const expensesReducer = (state, action) => {
       return { ...state, expenses: updatedExpenses };
     case "DELETE":
       return state.filter((expense) => expense.id !== action.payload);
+    case 'SAVE_USER_ID':
+      writeUserId(action.payload);
+      return { ...state, userId: action.payload };
     default:
       return state;
   }
 };
+
 export default ExpensesContextProvider = ({ children }) => {
   const [expenses, dispatch] = useReducer(expensesReducer, DUMMY_EXPENSES);
 
@@ -176,8 +120,13 @@ export default ExpensesContextProvider = ({ children }) => {
     dispatch({ type: "ADD_BALANCE", payload: amount });
   };
 
+  const saveUserId = (userId) => {
+    dispatch({ type: "SAVE_USER_ID", payload: userId });
+  }
+
   const value = {
     expenses: expenses,
+    userId: expenses.userId,
     balance: expenses[0].balance,
     categories: expenses[1].categories,
     categoriesColor: expenses[1].categoriesColor,
@@ -186,7 +135,8 @@ export default ExpensesContextProvider = ({ children }) => {
     addExpense,
     deleteExpense,
     editExpense,
-    addBalance
+    addBalance,
+    saveUserId,
   };
 
   return (

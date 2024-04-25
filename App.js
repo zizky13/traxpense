@@ -5,11 +5,12 @@ import { NavigationContainer } from "@react-navigation/native";
 import { useState, useEffect } from "react";
 import { LoadFonts } from "./assets/fonts/LoadFonts";
 import * as SplashScreen from "expo-splash-screen";
-import AddExpenseScreen from "./screens/AddExpenseScreen";
 import DetailScreen from "./screens/DetailScreen";
 import HomeScreen from "./screens/HomeScreen";
 import StartScreen from "./screens/StartScreen";
 import ExpenseContextProvider from "./store/expense-context";
+import SignUpScreen from "./screens/SignUpScreen";
+import AddRecord from "./screens/AddRecord";
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -57,9 +58,11 @@ export default function App() {
         <StatusBar style="auto" />
         <Stack.Navigator>
           <Stack.Screen name="Start" component={StartScreen} />
-          <Stack.Screen name="Home" component={NewHome} />
+          <Stack.Screen name="Home" component={NewHome} options={{headerShown: false}}/>
           <Stack.Screen name="Detail" component={DetailScreen} />
-          <Stack.Screen name="AddExpense" component={AddExpenseScreen} />
+          <Stack.Screen name="AddExpense" component={AddRecord} />
+          <Stack.Screen name="AddIncome" component={AddRecord} />
+          <Stack.Screen name="SignUp" component={SignUpScreen} options={{headerShown: false}}/>
         </Stack.Navigator>
       </NavigationContainer>
     </ExpenseContextProvider>

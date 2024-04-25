@@ -1,18 +1,36 @@
-import { View, Text, StyleSheet, FlatList } from "react-native";
+import { View, Text, StyleSheet, FlatList, BackHandler } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 import Cards from "../components/Cards";
-import { useContext } from "react";
+import { useContext, useEffect } from "react";
 import SummaryCard from "../components/SummaryCard";
 import { ExpenseContext } from "../store/expense-context";
 import CategoryGrid from "../components/CategoryGrid";
 import { useNavigation, useRoute } from "@react-navigation/native";
 import { signOut } from "firebase/auth";
-import { auth } from "../firebase"
+import { auth, useDatabaseData, db } from "../firebase";
+import { GlobalStyles } from "../constants/GlobalStyles";
+import { ref } from "firebase/database";
 
 export default HomeScreen = () => {
   const navigation = useNavigation();
   const route = useRoute();
   const expenseCtx = useContext(ExpenseContext);
-  
+  const dbref = ref(db, "users/" + auth.currentUser?.uid);
+  const dbdata = useDatabaseData(dbref);
+
+  useEffect(() => {
+    const backAction = () => {
+      return true; // This will prevent the back action
+    };
+
+    const backHandler = BackHandler.addEventListener(
+      "hardwareBackPress",
+      backAction
+    );
+
+    return () => backHandler.remove(); // Remove the event listener when the component unmounts
+  }, []);
+
   const signOutUser = async () => {
     try {
       await signOut(auth);
@@ -23,38 +41,40 @@ export default HomeScreen = () => {
     }
   };
 
-  let categoriesData;
-  let data = [];
+  let categoriesData, path, data = [];
+
   if (route.name === "Income") {
     categoriesData = expenseCtx.expenses[2]; // or whatever index corresponds to income data
+    add = "Add Income";
+    path = "AddIncome";
     data = categoriesData.incomes.map((income, index) => ({
       title: income,
       color: categoriesData.incomesColor[index],
     }));
   } else if (route.name === "Expense") {
     categoriesData = expenseCtx.expenses[1]; // or whatever index corresponds to expense data
+    add = "Add Expense";
+    path = "AddExpense";
     data = categoriesData.categories.map((category, index) => ({
       title: category,
       color: categoriesData.categoriesColor[index],
     }));
   }
 
-  
-
   return (
-    <View style={styles.outerContainer}>
+    <SafeAreaView style={styles.outerContainer}>
+      <View style={styles.profilecontainer}>
+        <Cards additionalStyle={styles.username}>
+          <Text>Hello, {dbdata.username}</Text>
+        </Cards>
+        <MyButton
+          style={styles.button}
+          title="Sign Out"
+          onPress={signOutUser}
+        />
+      </View>
       <View style={styles.summaryContainer}>
         <SummaryCard />
-        <View style={styles.innerSummaryContainer}>
-          <CategoryGrid title="Sign Out" color="white" onPress={signOutUser} />
-          <CategoryGrid title="Add expense" color="white" onPress={() => navigation.navigate("AddExpense")} />
-          <Cards>
-            <Text>Income Summary</Text>
-          </Cards>
-          <Cards>
-            <Text>Outcome Summary</Text>
-          </Cards>
-        </View>
       </View>
 
       <View style={styles.expenseListContainer}>
@@ -65,7 +85,10 @@ export default HomeScreen = () => {
               title={item.title}
               color={item.color}
               onPress={() => {
-                navigation.navigate("Detail", { category: item.title });
+                navigation.navigate("Detail", {
+                  category: item.title,
+                  path: path,
+                });
               }}
             />
           )}
@@ -74,7 +97,7 @@ export default HomeScreen = () => {
           inverted={true}
         />
       </View>
-    </View>
+    </SafeAreaView>
   );
 };
 
@@ -84,17 +107,20 @@ const styles = StyleSheet.create({
   },
 
   summaryContainer: {
-    backgroundColor: "blue",
-  },
-
-  innerSummaryContainer: {
-    flexDirection: "row",
-    backgroundColor: "green",
-    alignItems: "center",
-    justifyContent: "space-evenly",
+    borderWidth: 1,
+    borderRadius: 10,
+    borderColor: GlobalStyles.colors.neutral500,
+    backgroundColor: GlobalStyles.colors.neutral100,
+    margin: 3,
   },
 
   expenseListContainer: {
     flex: 1,
+  },
+
+  profilecontainer: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
   },
 });

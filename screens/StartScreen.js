@@ -1,44 +1,38 @@
-import { Text, View, StyleSheet, TextInput } from "react-native";
-import { useEffect, useState } from "react";
+import { Text, View, StyleSheet, TextInput, TouchableWithoutFeedback, Keyboard } from "react-native";
+import { useEffect, useState, useContext } from "react";
 import MyButton from "../components/MyButton";
 import { GlobalStyles } from "../constants/GlobalStyles";
 import { useNavigation } from "@react-navigation/native";
 import "../firebase";
 import {
-  createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
 } from "firebase/auth";
 import { onAuthStateChanged } from "firebase/auth";
 import { auth } from "../firebase";
+import { ExpenseContext } from "../store/expense-context";
 
 export default StartScreen = () => {
   const navigation = useNavigation();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const expenseCtx = useContext(ExpenseContext);
 
-  onAuthStateChanged(auth, (user) => {
-    if (user) {
-      const uid = user.uid;
-      console.log("User is signed in with uid: ", uid);
-      navigation.navigate("Home");
-    }
-  });
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      if (user) {
+        navigation.navigate("Home");
+      }
+    });
+    console.log("User is signed in with uid: ", expenseCtx.userId);
+    // Clean up the listener when the component unmounts
+    return unsubscribe;
+  }, []);
 
   const login = (email, password) => {
     signInWithEmailAndPassword(auth, email, password)
       .then((userCredential) => {
         alert("User signed in successfully!");
-      })
-      .catch((error) => {
-        alert(error.message);
-      });
-  };
-
-  const createUser = (email, password) => {
-    createUserWithEmailAndPassword(auth, email, password)
-      .then((userCredential) => {
         const user = userCredential.user;
-        alert("User created successfully!");
       })
       .catch((error) => {
         alert(error.message);
@@ -50,33 +44,39 @@ export default StartScreen = () => {
   }, [navigation]);
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.titleText}>Traxpense</Text>
-      <Text style={styles.subtitleText}>Manage your expense wisely</Text>
-      <TextInput
-        style={styles.input}
-        placeholder="Email"
-        value={email}
-        onChangeText={setEmail}
-      />
-      <TextInput
-        style={styles.input}
-        placeholder="Password"
-        value={password}
-        onChangeText={setPassword}
-        secureTextEntry={true}
-      />
-      <MyButton
-        style={styles.button}
-        title="Sign In"
-        onPress={() => createUser(email, password)}
-      />
-      <MyButton
-        style={styles.button}
-        title="Get Started!"
-        onPress={() => login(email, password)}
-      />
-    </View>
+    <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+      <View style={styles.container}>
+        <Text style={styles.titleText}>Traxpense</Text>
+        <Text style={styles.subtitleText}>Manage your expense wisely</Text>
+        <TextInput
+          style={styles.input}
+          placeholder="Email"
+          value={email}
+          onChangeText={setEmail}
+          keyboardType="email-address"
+        />
+        <TextInput
+          style={styles.input}
+          placeholder="Password"
+          value={password}
+          onChangeText={setPassword}
+          secureTextEntry={true}
+        />
+        <MyButton
+          style={styles.button}
+          optionalColor={GlobalStyles.colors.primary500}
+          title="Login"
+          onPress={() => login(email, password)}
+        />
+        <Text>Or</Text>
+        <MyButton
+          style={styles.button}
+          optionalColor={GlobalStyles.colors.accent400}
+          title="Sign Up"
+          onPress={() => navigation.navigate("SignUp")}
+        />
+      </View>
+    </TouchableWithoutFeedback>
   );
 };
 
@@ -90,8 +90,7 @@ const styles = StyleSheet.create({
 
   button: {
     minWidth: 100,
-    margin: 10,
-    marginTop: 20,
+    margin: 8,
   },
 
   titleText: {
@@ -109,6 +108,6 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     padding: 8,
     margin: 8,
-    minWidth: 150,
+    minWidth: 300,
   },
 });
