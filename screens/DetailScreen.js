@@ -4,7 +4,8 @@ import Cards from "../components/Cards";
 import { auth, db } from "../firebase";
 import { ref, onValue } from "firebase/database";
 import MyButton from "../components/MyButton";
-import { useNavigation, useRoute } from "@react-navigation/native";
+import { useNavigation } from "@react-navigation/native";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 export default DetailScreen = ({ route }) => {
   const { category, path } = route.params;
@@ -27,9 +28,9 @@ export default DetailScreen = ({ route }) => {
   
   const addScreenHandler = () => {
     if (path === "AddIncome") {
-      navigation.navigate("AddIncome");
+      navigation.navigate("AddIncome", { cat: category });
     } else if (path === "AddExpense") {
-      navigation.navigate("AddExpense");
+      navigation.navigate("AddExpense", { cat: category });
     }
   }
 

@@ -1,7 +1,7 @@
-import { View, Text, StyleSheet, FlatList, BackHandler } from "react-native";
+import { View, Text, StyleSheet, FlatList, BackHandler, ActivityIndicator } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import Cards from "../components/Cards";
-import { useContext, useEffect } from "react";
+import { useContext, useEffect, useState } from "react";
 import SummaryCard from "../components/SummaryCard";
 import { ExpenseContext } from "../store/expense-context";
 import CategoryGrid from "../components/CategoryGrid";
@@ -17,6 +17,21 @@ export default HomeScreen = () => {
   const expenseCtx = useContext(ExpenseContext);
   const dbref = ref(db, "users/" + auth.currentUser?.uid);
   const dbdata = useDatabaseData(dbref);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    const unsub = navigation.addListener("focus", () => {
+      setIsLoading(true);
+    });
+
+    return unsub;
+  }, [navigation]);
+
+  useEffect(() => {
+    if (dbdata) {
+      setIsLoading(false);
+    }
+  }, [dbdata]);
 
   useEffect(() => {
     const backAction = () => {
@@ -41,7 +56,9 @@ export default HomeScreen = () => {
     }
   };
 
-  let categoriesData, path, data = [];
+  let categoriesData,
+    path,
+    data = [];
 
   if (route.name === "Income") {
     categoriesData = expenseCtx.expenses[2]; // or whatever index corresponds to income data
@@ -60,6 +77,7 @@ export default HomeScreen = () => {
       color: categoriesData.categoriesColor[index],
     }));
   }
+
 
   return (
     <SafeAreaView style={styles.outerContainer}>
@@ -121,6 +139,13 @@ const styles = StyleSheet.create({
   profilecontainer: {
     flexDirection: "row",
     justifyContent: "space-between",
+    alignItems: "center",
+  },
+
+  loadingContainer:
+  {
+    flex: 1,
+    justifyContent: "center",
     alignItems: "center",
   },
 });

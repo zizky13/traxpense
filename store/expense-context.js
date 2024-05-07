@@ -1,8 +1,5 @@
 import { createContext, useReducer } from "react";
 import { GlobalStyles } from "../constants/GlobalStyles";
-import { db } from "../firebase";
-import { push, ref } from "firebase/database";
-import { set } from "firebase/database";
 
 const DUMMY_EXPENSES = [
   { balance: 1480000 },
@@ -39,13 +36,14 @@ const DUMMY_EXPENSES = [
     ],
   },
   {
-    incomes: ["Savings", "Paycheck", "Bonus", "Interest"],
+    incomes: ["Savings", "Paycheck", "Bonus", "Interest", "By Date"],
     incomesColor: [
       GlobalStyles.colors.neutral400,
       GlobalStyles.colors.accent300,
       GlobalStyles.colors.primary200,
       GlobalStyles.colors.neutral300,
       GlobalStyles.colors.accent200,
+      GlobalStyles.colors.accent500
     ],
   }
 ];

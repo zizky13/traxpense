@@ -1,5 +1,5 @@
 import { Text, View, SafeAreaView, TextInput, StyleSheet } from "react-native";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { DateTimePickerAndroid } from "@react-native-community/datetimepicker";
 import MyButton from "../components/MyButton";
 import { GlobalStyles } from "../constants/GlobalStyles";
@@ -14,13 +14,23 @@ export default AddRecord = () => {
   const [description, setDescription] = useState("");
   const [category, setCategory] = useState("");
   const route = useRoute();
+  const cat = route.params.cat;
   const userId = auth.currentUser?.uid;
+
+  const trimDate = (date) => {
+    return new Date(date).toLocaleDateString();
+  }
+
+  useEffect(() => {
+    if (cat !== 'By Date')
+    setCategory(cat);
+  }, [cat]);
 
   const onChange = (event, selectedDate) => {
     const currentDate = selectedDate;
     if (event.type === "set") {
       setDate(currentDate);
-      console.log(currentDate);
+      console.log(date);
     }
   };
 
@@ -42,6 +52,7 @@ export default AddRecord = () => {
       description: description,
       amount: amount,
       category: category,
+      date: date.toLocaleDateString(),
     }).then(() => {
       alert("Record added successfully!");
       setDescription("");
@@ -52,6 +63,7 @@ export default AddRecord = () => {
 
   return (
     <SafeAreaView style={styles.container}>
+      <Text>Add Record of {cat}</Text>
       <TextInput
         style={styles.textInput}
         placeholder="Amount"
@@ -63,7 +75,7 @@ export default AddRecord = () => {
         placeholder="Description"
         onChangeText={setDescription}
       />
-      {route.name === "AddExpense" && (
+      {route.name === "AddExpense" && cat === "By Date" && (
         <Picker selectedValue={category} onValueChange={setCategory}>
           <Picker.Item label="Select a category" value="" />
           <Picker.Item label="Food" value="Food" />
@@ -80,7 +92,7 @@ export default AddRecord = () => {
           <Picker.Item label="Others" value="Others" />
         </Picker>
       )}
-      {route.name === "AddIncome" && (
+      {(route.name === "AddIncome" && cat === "By Date") && (
         <Picker selectedValue={category} onValueChange={setCategory}>
           <Picker.Item label="Add new income" value="Add new income" />
           <Picker.Item label="Savings" value="Savings" />
@@ -91,14 +103,14 @@ export default AddRecord = () => {
       )}
 
       <View style={styles.dateSelector}>
-        <Text>Date: {date ? date.toLocaleString() : "No date selected"}</Text>
-        <MyButton
+        <Text>Date: {date ? date.toLocaleDateString() : "No date selected"}</Text>
+        {cat !== "By Date" && (<MyButton
           optionalColor={GlobalStyles.colors.accent400}
           title="Set Date"
           onPress={showDatepicker}
-        />
+        />)}
       </View>
-      <MyButton title="Add Expense" onPress={addRecord} />
+      <MyButton title="Add" onPress={addRecord} />
     </SafeAreaView>
   );
 };
