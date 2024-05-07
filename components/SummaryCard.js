@@ -37,6 +37,7 @@ export default SummaryCard = () => {
             {new Intl.NumberFormat("id-ID", {
               style: "currency",
               currency: "IDR",
+              minimumFractionDigits: 0,
             }).format(savings)}
           </Text>
           <Text>Saved this month by: {savingsPercentage}%</Text>
@@ -52,6 +53,7 @@ export default SummaryCard = () => {
             {new Intl.NumberFormat("id-ID", {
               style: "currency",
               currency: "IDR",
+              minimumFractionDigits: 0,
             }).format(incomeSummary)}
           </Text>
         </Cards>
@@ -64,6 +66,7 @@ export default SummaryCard = () => {
             {new Intl.NumberFormat("id-ID", {
               style: "currency",
               currency: "IDR",
+              minimumFractionDigits: 0,
             }).format(outcomeSummary)}
           </Text>
         </Cards>

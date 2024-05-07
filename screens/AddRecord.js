@@ -4,7 +4,7 @@ import { DateTimePickerAndroid } from "@react-native-community/datetimepicker";
 import MyButton from "../components/MyButton";
 import { GlobalStyles } from "../constants/GlobalStyles";
 import { Picker } from "@react-native-picker/picker";
-import { ref, push } from "firebase/database";
+import { ref, push, update } from "firebase/database";
 import { auth, db } from "../firebase";
 import { useRoute } from "@react-navigation/native";
 
@@ -48,12 +48,15 @@ export default AddRecord = () => {
   };
 
   const addRecord = () => {
-    push(ref(db, "users/" + userId + "/expenses"), {
+    const newRecordRef = push(ref(db, "users/" + userId + "/expenses"), {
       description: description,
       amount: amount,
       category: category,
       date: date.toLocaleDateString(),
-    }).then(() => {
+    });
+
+    newRecordRef.then(() => {
+      update(newRecordRef, { id: newRecordRef.key });
       alert("Record added successfully!");
       setDescription("");
       setAmount(0);
@@ -61,13 +64,26 @@ export default AddRecord = () => {
     });
   };
 
+  const rupiahConvert = (text) => {
+    return new Intl.NumberFormat("id-ID", {
+      style: "currency",
+      currency: "IDR",
+      minimumFractionDigits: 0,
+    }).format(text);
+  }
+
+
   return (
     <SafeAreaView style={styles.container}>
       <Text>Add Record of {cat}</Text>
       <TextInput
         style={styles.textInput}
+        value={rupiahConvert(amount)}
         placeholder="Amount"
-        onChangeText={(text) => setAmount(Number(text))}
+        onChangeText={(text) => {
+          const numericText = text.replace(/[^0-9]/g, "");
+          setAmount(Number(numericText));
+        }}
         keyboardType="numeric"
       />
       <TextInput
@@ -92,7 +108,7 @@ export default AddRecord = () => {
           <Picker.Item label="Others" value="Others" />
         </Picker>
       )}
-      {(route.name === "AddIncome" && cat === "By Date") && (
+      {route.name === "AddIncome" && cat === "By Date" && (
         <Picker selectedValue={category} onValueChange={setCategory}>
           <Picker.Item label="Add new income" value="Add new income" />
           <Picker.Item label="Savings" value="Savings" />
@@ -103,12 +119,16 @@ export default AddRecord = () => {
       )}
 
       <View style={styles.dateSelector}>
-        <Text>Date: {date ? date.toLocaleDateString() : "No date selected"}</Text>
-        {cat !== "By Date" && (<MyButton
-          optionalColor={GlobalStyles.colors.accent400}
-          title="Set Date"
-          onPress={showDatepicker}
-        />)}
+        <Text>
+          Date: {date ? date.toLocaleDateString() : "No date selected"}
+        </Text>
+        {cat !== "By Date" && (
+          <MyButton
+            optionalColor={GlobalStyles.colors.accent400}
+            title="Set Date"
+            onPress={showDatepicker}
+          />
+        )}
       </View>
       <MyButton title="Add" onPress={addRecord} />
     </SafeAreaView>
