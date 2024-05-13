@@ -46,7 +46,7 @@ export default DetailScreen = ({ route }) => {
   }
 
   const editHandler = (id) => {
-
+    navigation.navigate("AddIncome", { id: id });
   }
 
   return (
@@ -65,7 +65,7 @@ export default DetailScreen = ({ route }) => {
             </TouchableOpacity>
 
             <View style={styles.buttonContainer}>
-              <MyButton title="Edit" onPress={() => {}} />
+              <MyButton title="Edit" onPress={() => {editHandler(item.id)}} />
               <MyButton title="Delete" onPress={() => deleteHandler(item.id)} />
             </View>
           </View>

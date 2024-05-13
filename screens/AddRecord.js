@@ -4,7 +4,7 @@ import { DateTimePickerAndroid } from "@react-native-community/datetimepicker";
 import MyButton from "../components/MyButton";
 import { GlobalStyles } from "../constants/GlobalStyles";
 import { Picker } from "@react-native-picker/picker";
-import { ref, push, update } from "firebase/database";
+import { ref, push, update, set, get } from "firebase/database";
 import { auth, db } from "../firebase";
 import { useRoute } from "@react-navigation/native";
 
@@ -16,14 +16,32 @@ export default AddRecord = () => {
   const route = useRoute();
   const cat = route.params.cat;
   const userId = auth.currentUser?.uid;
+  const itemId = route.params.id;
+
+  if (itemId) {
+    useEffect(() => {
+      get(ref(db, "users/" + userId + "/expenses/" + itemId))
+        .then((snapshot) => {
+          if (snapshot.exists()) {
+            setAmount(snapshot.val().amount);
+            setDescription(snapshot.val().description);
+            setCategory(snapshot.val().category);
+          } else {
+            console.log("No data available");
+          }
+        })
+        .catch((error) => {
+          console.error(error);
+        });
+    }, [itemId, userId]);
+  }
 
   const trimDate = (date) => {
     return new Date(date).toLocaleDateString();
-  }
+  };
 
   useEffect(() => {
-    if (cat !== 'By Date')
-    setCategory(cat);
+    if (cat !== "By Date") setCategory(cat);
   }, [cat]);
 
   const onChange = (event, selectedDate) => {
@@ -64,14 +82,29 @@ export default AddRecord = () => {
     });
   };
 
+  const editRecord = () => {
+    const editRecordRef = set(ref(db, "users/" + userId + "/expenses/" + itemId), {
+      description: description,
+      amount: amount,
+      category: category,
+      date: date.toLocaleDateString(),
+    });
+
+    editRecordRef.then(() => {
+      alert("Record edited successfully!");
+      setDescription("");
+      setAmount(0);
+      setCategory("");
+    });
+  };
+
   const rupiahConvert = (text) => {
     return new Intl.NumberFormat("id-ID", {
       style: "currency",
       currency: "IDR",
       minimumFractionDigits: 0,
     }).format(text);
-  }
-
+  };
 
   return (
     <SafeAreaView style={styles.container}>
@@ -89,9 +122,10 @@ export default AddRecord = () => {
       <TextInput
         style={styles.textInput}
         placeholder="Description"
-        onChangeText={setDescription}
+        value={description}
+        onChangeText={(text) => setDescription(text)}
       />
-      {route.name === "AddExpense" && cat === "By Date" && (
+      {route.name === "AddExpense" && cat === "By Date" || itemId && (
         <Picker selectedValue={category} onValueChange={setCategory}>
           <Picker.Item label="Select a category" value="" />
           <Picker.Item label="Food" value="Food" />
@@ -108,7 +142,7 @@ export default AddRecord = () => {
           <Picker.Item label="Others" value="Others" />
         </Picker>
       )}
-      {route.name === "AddIncome" && cat === "By Date" && (
+      {route.name === "AddIncome" && cat === "By Date" || itemId && (
         <Picker selectedValue={category} onValueChange={setCategory}>
           <Picker.Item label="Add new income" value="Add new income" />
           <Picker.Item label="Savings" value="Savings" />
@@ -130,12 +164,10 @@ export default AddRecord = () => {
           />
         )}
       </View>
-      <MyButton title="Add" onPress={addRecord} />
+      {itemId ? <MyButton title="Edit" onPress={editRecord}/> : <MyButton title="Add" onPress={addRecord} />}
     </SafeAreaView>
   );
 };
-
-
 
 const styles = StyleSheet.create({
   container: {
