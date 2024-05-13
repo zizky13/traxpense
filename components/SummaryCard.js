@@ -6,6 +6,7 @@ import { ref } from "firebase/database";
 import { MaterialIcons } from "@expo/vector-icons";
 import { GlobalStyles } from "../constants/GlobalStyles";
 
+
 //DATA NEEDED: total income, total outcome, starting balance, end balance
 
 export default SummaryCard = () => {
@@ -14,7 +15,8 @@ export default SummaryCard = () => {
   const [incomeSummary, setIncomeSummary] = useState(0);
   const [outcomeSummary, setOutcomeSummary] = useState(0);
   const [savings, setSavings] = useState(0);
-  const savingsPercentage = (savings / incomeSummary) * 100;
+  const savingsPercentage = Math.round((savings / incomeSummary) * 100);
+  
   
   useEffect(() => {
     if (
@@ -30,6 +32,7 @@ export default SummaryCard = () => {
   return (
     <View style={styles.outerContainer}>
       <View style={styles.savingContainer}>
+        
         <Cards additionalStyle={styles.additional}>
           <MaterialIcons name="savings" size={48} color="black" />
           <Text style={{ fontFamily: "Inter-Bold" }}>Total savings:</Text>
@@ -78,6 +81,11 @@ export default SummaryCard = () => {
 const styles = StyleSheet.create({
   outerContainer: {
     justifyContent: "center",
+  },
+
+  graphStyle: {
+    margin: 8,
+    borderRadius: 16,
   },
 
   savingContainer: {

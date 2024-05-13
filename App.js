@@ -11,6 +11,7 @@ import StartScreen from "./screens/StartScreen";
 import ExpenseContextProvider from "./store/expense-context";
 import SignUpScreen from "./screens/SignUpScreen";
 import AddRecord from "./screens/AddRecord";
+import ReportScreen from "./screens/ReportScreen";
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -22,6 +23,7 @@ const NewHome = () => {
       }}>
       <Tab.Screen name="Expense" component={HomeScreen} />
       <Tab.Screen name="Income" component={HomeScreen} />
+      <Tab.Screen name="Report" component={ReportScreen} />
     </Tab.Navigator>
   );
 }
@@ -63,10 +65,7 @@ export default function App() {
             component={NewHome}
             options={{ headerShown: false }}
           />
-          <Stack.Screen
-            name="Detail"
-            component={DetailScreen}
-          />
+          <Stack.Screen name="Detail" component={DetailScreen} />
           <Stack.Screen
             name="AddExpense"
             component={AddRecord}
@@ -81,6 +80,11 @@ export default function App() {
             name="SignUp"
             component={SignUpScreen}
             options={{ headerShown: false }}
+          />
+          <Stack.Screen
+            name="ReportScreen"
+            component={ReportScreen}
+            options={{ title: "Report" }}
           />
         </Stack.Navigator>
       </NavigationContainer>

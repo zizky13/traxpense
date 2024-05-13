@@ -19,6 +19,7 @@ export default AddRecord = () => {
   const itemId = route.params.id;
 
   if (itemId) {
+    //check if this is edit operation
     useEffect(() => {
       get(ref(db, "users/" + userId + "/expenses/" + itemId))
         .then((snapshot) => {
@@ -80,15 +81,38 @@ export default AddRecord = () => {
       setAmount(0);
       setCategory("");
     });
+
+    get(ref(db, "users/" + userId))
+      .then((snapshot) => {
+        if (snapshot.exists()) {
+          if (route.name === "AddIncome") {
+            update(ref(db, "users/" + userId), {
+              outcomeSummary: snapshot.val().outcomeSummary + amount,
+            });
+          } else {
+            update(ref(db, "users/" + userId), {
+              incomeSummary: snapshot.val().incomeSummary + amount,
+            });
+          }
+        } else {
+          console.log("No data available");
+        }
+      })
+      .catch((error) => {
+        console.error(error);
+      });
   };
 
   const editRecord = () => {
-    const editRecordRef = set(ref(db, "users/" + userId + "/expenses/" + itemId), {
-      description: description,
-      amount: amount,
-      category: category,
-      date: date.toLocaleDateString(),
-    });
+    const editRecordRef = set(
+      ref(db, "users/" + userId + "/expenses/" + itemId),
+      {
+        description: description,
+        amount: amount,
+        category: category,
+        date: date.toLocaleDateString(),
+      }
+    );
 
     editRecordRef.then(() => {
       alert("Record edited successfully!");
@@ -125,32 +149,34 @@ export default AddRecord = () => {
         value={description}
         onChangeText={(text) => setDescription(text)}
       />
-      {route.name === "AddExpense" && cat === "By Date" || itemId && (
-        <Picker selectedValue={category} onValueChange={setCategory}>
-          <Picker.Item label="Select a category" value="" />
-          <Picker.Item label="Food" value="Food" />
-          <Picker.Item label="Gifts" value="Gifts" />
-          <Picker.Item label="Health/medical" value="Health/medical" />
-          <Picker.Item label="Home" value="Home" />
-          <Picker.Item label="Transportation" value="Transportation" />
-          <Picker.Item label="Personal" value="Personal" />
-          <Picker.Item label="Pets" value="Pets" />
-          <Picker.Item label="Utilities" value="Utilities" />
-          <Picker.Item label="Travel" value="Travel" />
-          <Picker.Item label="Debt" value="Debt" />
-          <Picker.Item label="Loan" value="Loan" />
-          <Picker.Item label="Others" value="Others" />
-        </Picker>
-      )}
-      {route.name === "AddIncome" && cat === "By Date" || itemId && (
-        <Picker selectedValue={category} onValueChange={setCategory}>
-          <Picker.Item label="Add new income" value="Add new income" />
-          <Picker.Item label="Savings" value="Savings" />
-          <Picker.Item label="Paycheck" value="Paycheck" />
-          <Picker.Item label="Bonus" value="Bonus" />
-          <Picker.Item label="Interest" value="Interest" />
-        </Picker>
-      )}
+      {(route.name === "AddExpense" && cat === "By Date") ||
+        (itemId && (
+          <Picker selectedValue={category} onValueChange={setCategory}>
+            <Picker.Item label="Select a category" value="" />
+            <Picker.Item label="Food" value="Food" />
+            <Picker.Item label="Gifts" value="Gifts" />
+            <Picker.Item label="Health/medical" value="Health/medical" />
+            <Picker.Item label="Home" value="Home" />
+            <Picker.Item label="Transportation" value="Transportation" />
+            <Picker.Item label="Personal" value="Personal" />
+            <Picker.Item label="Pets" value="Pets" />
+            <Picker.Item label="Utilities" value="Utilities" />
+            <Picker.Item label="Travel" value="Travel" />
+            <Picker.Item label="Debt" value="Debt" />
+            <Picker.Item label="Loan" value="Loan" />
+            <Picker.Item label="Others" value="Others" />
+          </Picker>
+        ))}
+      {(route.name === "AddIncome" && cat === "By Date") ||
+        (itemId && (
+          <Picker selectedValue={category} onValueChange={setCategory}>
+            <Picker.Item label="Add new income" value="Add new income" />
+            <Picker.Item label="Savings" value="Savings" />
+            <Picker.Item label="Paycheck" value="Paycheck" />
+            <Picker.Item label="Bonus" value="Bonus" />
+            <Picker.Item label="Interest" value="Interest" />
+          </Picker>
+        ))}
 
       <View style={styles.dateSelector}>
         <Text>
@@ -164,7 +190,11 @@ export default AddRecord = () => {
           />
         )}
       </View>
-      {itemId ? <MyButton title="Edit" onPress={editRecord}/> : <MyButton title="Add" onPress={addRecord} />}
+      {itemId ? (
+        <MyButton title="Edit" onPress={editRecord} />
+      ) : (
+        <MyButton title="Add" onPress={addRecord} />
+      )}
     </SafeAreaView>
   );
 };

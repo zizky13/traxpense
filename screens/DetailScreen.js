@@ -24,6 +24,7 @@ export default DetailScreen = ({ route }) => {
     });
   }, []);
   const renderedData = expenses.filter((item) => item.category === category);
+  const renderedDataByDate = [...expenses].sort((a, b) => new Date(a.date) - new Date(b.date));
   
   const addScreenHandler = () => {
     if (path === "AddIncome") {
@@ -53,25 +54,67 @@ export default DetailScreen = ({ route }) => {
     <View>
       <Text>{category} Screen</Text>
       <MyButton title="Add Record" onPress={addScreenHandler} />
-      <FlatList
-        data={renderedData}
-        renderItem={({ item }) => (
-          <View style={styles.recordContainer}>
-            <Text style={styles.dateText}>{item.date}</Text>
+      {category === "By Date" ? (
+        <FlatList
+          data={renderedDataByDate}
+          renderItem={({ item }) => (
+            <View style={styles.recordContainer}>
+              <Text style={styles.dateText}>{item.date}</Text>
 
-            <TouchableOpacity style={styles.recordDetails}>
-              <Text style={styles.recordText}>{rupiahConverter(item.amount)}</Text>
-              <Text style={styles.recordText}>{item.description}</Text>
-            </TouchableOpacity>
+              <TouchableOpacity style={styles.recordDetails}>
+                <Text style={styles.recordText}>
+                  {rupiahConverter(item.amount)}
+                </Text>
+                <Text style={styles.recordText}>{item.description}</Text>
+              </TouchableOpacity>
 
-            <View style={styles.buttonContainer}>
-              <MyButton title="Edit" onPress={() => {editHandler(item.id)}} />
-              <MyButton title="Delete" onPress={() => deleteHandler(item.id)} />
+              <View style={styles.buttonContainer}>
+                <MyButton
+                  title="Edit"
+                  onPress={() => {
+                    editHandler(item.id);
+                  }}
+                />
+                <MyButton
+                  title="Delete"
+                  onPress={() => deleteHandler(item.id)}
+                />
+              </View>
             </View>
-          </View>
-        )}
-        keyExtractor={(item) => item.id}
-      />
+          )}
+          keyExtractor={(item) => item.id}
+        />
+      ) : (
+        <FlatList
+          data={renderedData}
+          renderItem={({ item }) => (
+            <View style={styles.recordContainer}>
+              <Text style={styles.dateText}>{item.date}</Text>
+
+              <TouchableOpacity style={styles.recordDetails}>
+                <Text style={styles.recordText}>
+                  {rupiahConverter(item.amount)}
+                </Text>
+                <Text style={styles.recordText}>{item.description}</Text>
+              </TouchableOpacity>
+
+              <View style={styles.buttonContainer}>
+                <MyButton
+                  title="Edit"
+                  onPress={() => {
+                    editHandler(item.id);
+                  }}
+                />
+                <MyButton
+                  title="Delete"
+                  onPress={() => deleteHandler(item.id)}
+                />
+              </View>
+            </View>
+          )}
+          keyExtractor={(item) => item.id}
+        />
+      )}
     </View>
   );
 };
