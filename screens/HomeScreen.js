@@ -10,6 +10,7 @@ import { signOut } from "firebase/auth";
 import { auth, useDatabaseData, db } from "../firebase";
 import { GlobalStyles } from "../constants/GlobalStyles";
 import { ref } from "firebase/database";
+import MyButton from "../components/MyButton";
 
 export default HomeScreen = () => {
   const navigation = useNavigation();
@@ -83,10 +84,11 @@ export default HomeScreen = () => {
     <SafeAreaView style={styles.outerContainer}>
       <View style={styles.profilecontainer}>
         <Cards additionalStyle={styles.username}>
-          <Text>Hello, {dbdata.username}</Text>
+          <Text style={styles.textStyle}>Hello, {dbdata.username}</Text>
         </Cards>
         <MyButton
-          style={styles.button}
+          optionalColor={GlobalStyles.colors.error}
+          textStyle={{ color: GlobalStyles.colors.neutral100, fontSize: 12 }}
           title="Sign Out"
           onPress={signOutUser}
         />
@@ -124,6 +126,11 @@ const styles = StyleSheet.create({
     flex: 1,
   },
 
+  textStyle: {
+    fontFamily: "Inter-Regular",
+    fontSize: 12,
+  },
+
   summaryContainer: {
     borderWidth: 1,
     borderRadius: 10,
@@ -142,10 +149,13 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
 
-  loadingContainer:
-  {
+  loadingContainer: {
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
   },
+
+  username:{
+    borderColor: GlobalStyles.colors.neutral500
+  }
 });

@@ -1,9 +1,9 @@
 import { Pressable, Text, StyleSheet, View } from "react-native";
 import { GlobalStyles } from "../constants/GlobalStyles";
 
-export default MyButton = ({ title, onPress, style, optionalColor }) => {
+export default MyButton = ({ title, onPress, containerStyle, optionalColor, textStyle }) => {
   return (
-    <View style={style}>
+    <View style={containerStyle}>
       <Pressable
         onPress={onPress}
         style={({ pressed }) => pressed && styles.pressed}
@@ -16,7 +16,7 @@ export default MyButton = ({ title, onPress, style, optionalColor }) => {
             },
           ]}
         >
-          <Text style={styles.text}>{title}</Text>
+          <Text style={[styles.text, textStyle]}>{title}</Text>
         </View>
       </Pressable>
     </View>

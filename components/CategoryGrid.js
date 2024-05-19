@@ -48,8 +48,8 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   title: {
-    fontFamily: "Inter-Regular",
-    fontSize: 13,
-    color: GlobalStyles.colors.neutral900,
+    fontFamily: "Montserrat-Bold",
+    fontSize: 16,
+    color: 'white',
   },
 });

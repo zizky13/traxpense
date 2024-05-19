@@ -12,6 +12,7 @@ import ExpenseContextProvider from "./store/expense-context";
 import SignUpScreen from "./screens/SignUpScreen";
 import AddRecord from "./screens/AddRecord";
 import ReportScreen from "./screens/ReportScreen";
+import { MaterialIcons } from "@expo/vector-icons";
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -21,8 +22,22 @@ const NewHome = () => {
     <Tab.Navigator screenOptions={{
       headerShown: false
       }}>
-      <Tab.Screen name="Expense" component={HomeScreen} />
-      <Tab.Screen name="Income" component={HomeScreen} />
+      <Tab.Screen name="Expense" component={HomeScreen} 
+      options={
+        {
+          tabBarIcon: ({ color }) => (
+            <MaterialIcons name="money-off" size={24} color={color} />
+          ),
+        }
+      }/>
+      <Tab.Screen name="Income" component={HomeScreen} options={
+        {
+          tabBarIcon: ({ color }) => (
+            <MaterialIcons name="attach-money" size={24} color={color} />
+          ),
+        }
+      
+      }/>
       <Tab.Screen name="Report" component={ReportScreen} />
     </Tab.Navigator>
   );

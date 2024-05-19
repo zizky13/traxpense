@@ -4,6 +4,8 @@ import { auth, db } from "../firebase";
 import { ref, onValue, remove } from "firebase/database";
 import MyButton from "../components/MyButton";
 import { useNavigation } from "@react-navigation/native";
+import moment from "moment";
+import { GlobalStyles } from "../constants/GlobalStyles";
 
 
 export default DetailScreen = ({ route }) => {
@@ -23,8 +25,9 @@ export default DetailScreen = ({ route }) => {
       setExpenses(expensesArray);
     });
   }, []);
-  const renderedData = expenses.filter((item) => item.category === category);
-  const renderedDataByDate = [...expenses].sort((a, b) => new Date(a.date) - new Date(b.date));
+  const renderedData = expenses.filter((item) => item.category === category);const renderedDataByDate = [...expenses].sort(
+    (a, b) => moment(b.date, "M/DD/YYYY") - moment(a.date, "M/DD/YYYY")
+  );
   
   const addScreenHandler = () => {
     if (path === "AddIncome") {
@@ -52,8 +55,15 @@ export default DetailScreen = ({ route }) => {
 
   return (
     <View>
-      <Text>{category} Screen</Text>
-      <MyButton title="Add Record" onPress={addScreenHandler} />
+      <View style={{ alignItems: "center" }}>
+        <Text style={styles.title}>{category}</Text>
+      </View>
+      <MyButton
+        textStyle={{ color: GlobalStyles.colors.neutral100 }}
+        optionalColor={GlobalStyles.colors.primary300}
+        title="Add Record"
+        onPress={addScreenHandler}
+      />
       {category === "By Date" ? (
         <FlatList
           data={renderedDataByDate}
@@ -71,12 +81,16 @@ export default DetailScreen = ({ route }) => {
               <View style={styles.buttonContainer}>
                 <MyButton
                   title="Edit"
+                  textStyle={{ color: GlobalStyles.colors.neutral100 }}
+                  optionalColor={GlobalStyles.colors.primary300}
                   onPress={() => {
                     editHandler(item.id);
                   }}
                 />
                 <MyButton
                   title="Delete"
+                  textStyle={{ color: GlobalStyles.colors.neutral100 }}
+                  optionalColor={GlobalStyles.colors.error}
                   onPress={() => deleteHandler(item.id)}
                 />
               </View>
@@ -101,12 +115,16 @@ export default DetailScreen = ({ route }) => {
               <View style={styles.buttonContainer}>
                 <MyButton
                   title="Edit"
+                  textStyle={{ color: GlobalStyles.colors.neutral100 }}
+                  optionalColor={GlobalStyles.colors.primary300}
                   onPress={() => {
                     editHandler(item.id);
                   }}
                 />
                 <MyButton
                   title="Delete"
+                  textStyle={{ color: GlobalStyles.colors.neutral100 }}
+                  optionalColor={GlobalStyles.colors.error}
                   onPress={() => deleteHandler(item.id)}
                 />
               </View>
@@ -128,9 +146,8 @@ const styles = StyleSheet.create({
     padding: 10,
     margin: 5,
     marginVertcial: 10,
-    borderWidth: 1,
     borderRadius: 10,
-    borderColor: "black",
+    backgroundColor: GlobalStyles.colors.neutral300,
   },
 
   dateText: {
@@ -147,11 +164,18 @@ const styles = StyleSheet.create({
   recordText: {
     fontFamily: "Inter-Regular",
     fontSize: 16,
+    color: GlobalStyles.colors.neutral800,
   },
 
   buttonContainer: {
     flexDirection: "row",
     justifyContent: "space-around",
     alignItems: "center",
+  },
+
+  title: {
+    fontFamily: "Montserrat-Black",
+    fontSize: 20,
+    margin: 10,
   },
 })

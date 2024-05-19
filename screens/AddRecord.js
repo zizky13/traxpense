@@ -142,41 +142,40 @@ export default AddRecord = () => {
           setAmount(Number(numericText));
         }}
         keyboardType="numeric"
-      />
+      />  
       <TextInput
         style={styles.textInput}
         placeholder="Description"
         value={description}
         onChangeText={(text) => setDescription(text)}
       />
-      {(route.name === "AddExpense" && cat === "By Date") ||
-        (itemId && (
-          <Picker selectedValue={category} onValueChange={setCategory}>
-            <Picker.Item label="Select a category" value="" />
-            <Picker.Item label="Food" value="Food" />
-            <Picker.Item label="Gifts" value="Gifts" />
-            <Picker.Item label="Health/medical" value="Health/medical" />
-            <Picker.Item label="Home" value="Home" />
-            <Picker.Item label="Transportation" value="Transportation" />
-            <Picker.Item label="Personal" value="Personal" />
-            <Picker.Item label="Pets" value="Pets" />
-            <Picker.Item label="Utilities" value="Utilities" />
-            <Picker.Item label="Travel" value="Travel" />
-            <Picker.Item label="Debt" value="Debt" />
-            <Picker.Item label="Loan" value="Loan" />
-            <Picker.Item label="Others" value="Others" />
-          </Picker>
-        ))}
-      {(route.name === "AddIncome" && cat === "By Date") ||
-        (itemId && (
-          <Picker selectedValue={category} onValueChange={setCategory}>
-            <Picker.Item label="Add new income" value="Add new income" />
-            <Picker.Item label="Savings" value="Savings" />
-            <Picker.Item label="Paycheck" value="Paycheck" />
-            <Picker.Item label="Bonus" value="Bonus" />
-            <Picker.Item label="Interest" value="Interest" />
-          </Picker>
-        ))}
+      {(route.name === "AddExpense" && cat === "By Date") || itemId ? (
+        <Picker selectedValue={category} onValueChange={setCategory}>
+          <Picker.Item label="Select a category" value="" />
+          <Picker.Item label="Food" value="Food" />
+          <Picker.Item label="Gifts" value="Gifts" />
+          <Picker.Item label="Health/medical" value="Health/medical" />
+          <Picker.Item label="Home" value="Home" />
+          <Picker.Item label="Transportation" value="Transportation" />
+          <Picker.Item label="Personal" value="Personal" />
+          <Picker.Item label="Pets" value="Pets" />
+          <Picker.Item label="Utilities" value="Utilities" />
+          <Picker.Item label="Travel" value="Travel" />
+          <Picker.Item label="Debt" value="Debt" />
+          <Picker.Item label="Loan" value="Loan" />
+          <Picker.Item label="Others" value="Others" />
+        </Picker>
+      ) : null}
+
+      {(route.name === "AddIncome" && cat === "By Date") || itemId ? (
+        <Picker selectedValue={category} onValueChange={setCategory}>
+          <Picker.Item label="Add new income" value="Add new income" />
+          <Picker.Item label="Savings" value="Savings" />
+          <Picker.Item label="Paycheck" value="Paycheck" />
+          <Picker.Item label="Bonus" value="Bonus" />
+          <Picker.Item label="Interest" value="Interest" />
+        </Picker>
+      ) : null}
 
       <View style={styles.dateSelector}>
         <Text>
@@ -186,14 +185,25 @@ export default AddRecord = () => {
           <MyButton
             optionalColor={GlobalStyles.colors.accent400}
             title="Set Date"
+            textStyle={{ color: GlobalStyles.colors.neutral100 }}
             onPress={showDatepicker}
           />
         )}
       </View>
       {itemId ? (
-        <MyButton title="Edit" onPress={editRecord} />
+        <MyButton
+          title="Edit"
+          onPress={editRecord}
+          optionalColor={GlobalStyles.colors.primary300}
+          textStyle={{ color: GlobalStyles.colors.neutral100 }}
+        />
       ) : (
-        <MyButton title="Add" onPress={addRecord} />
+        <MyButton
+          title="Add"
+          onPress={addRecord}
+          optionalColor={GlobalStyles.colors.primary300}
+          textStyle={{ color: GlobalStyles.colors.neutral100 }}
+        />
       )}
     </SafeAreaView>
   );
