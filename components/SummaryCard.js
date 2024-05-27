@@ -16,60 +16,86 @@ export default SummaryCard = () => {
   const [incomeSummary, setIncomeSummary] = useState(0);
   const [outcomeSummary, setOutcomeSummary] = useState(0);
   const [savings, setSavings] = useState(0);
-  const savingsPercentage = Math.round((savings / incomeSummary) * 100);
+  const savingsPercentage = incomeSummary !== 0 ? (savings / incomeSummary) * 100 : 0;
+  
   const styles = StyleSheet.create({
     outerContainer: {
       justifyContent: "center",
     },
-  
+    
+    box:{
+      marginVertical: 12,
+      width: "100%",
+      height: 10,
+      backgroundColor: "black",
+      borderRadius: 12,
+    },
+
+    boxDalam:{
+      height: "100%",
+      backgroundColor: "red",
+      borderRadius: 2,
+    },
+
     graphStyle: {
       margin: 8,
       borderRadius: 16,
     },
-  
+
     savingContainer: {
       justifyContent: "center",
       alignItems: "center",
     },
-  
+
     additional: {
-      height: windowHeight * 0.2,
+      height: windowHeight * 0.17,
+      width: windowWidth * 0.93,
+      padding: 8,
+      borderWidth: 1,
+      borderColor: GlobalStyles.colors.neutral200,
+      elevation: 8,
+      margin: 4,
+      marginHorizontal: 8,
+    },
+
+    balanceContainer: {
+      height: windowHeight * 0.1,
       width: windowWidth * 0.93,
       padding: 8,
       borderWidth: 1,
       borderColor: GlobalStyles.colors.neutral200,
       elevation: 8,
     },
-  
+
     additionalIncomeOutcome: {
-      width: windowWidth * 0.435,
       borderWidth: 2,
       borderColor: GlobalStyles.colors.neutral200,
       elevation: 8,
     },
-  
+
     button: {
       borderRadius: 10,
       margin: 8,
     },
-  
+
     innerSummaryContainer: {
       flexDirection: "row",
       alignItems: "center",
       justifyContent: "space-around",
       marginBottom: 8,
     },
-  
+
     textHeadingStyle: {
       fontFamily: "Montserrat-Black",
       fontSize: 20,
     },
-  
+
     textStyle: {
       fontFamily: "Inter-Regular",
       fontSize: 16,
     },
   });
+  const startingBalance = dbdata.balance;
 
   useEffect(() => {
     if (
@@ -101,9 +127,8 @@ export default SummaryCard = () => {
         </Cards>
       </View>
 
-      <View style={styles.innerSummaryContainer}>
         <Cards additionalStyle={styles.additionalIncomeOutcome}>
-          <Feather name='chevrons-down' size={36} color="green" />
+          <Feather name="chevrons-down" size={36} color="green" />
           <Text style={styles.textHeadingStyle}>Income:</Text>
           <Text style={[styles.textStyle, { fontSize: 14 }]}>
             {" "}
@@ -114,9 +139,8 @@ export default SummaryCard = () => {
             }).format(incomeSummary)}
           </Text>
         </Cards>
-
         <Cards additionalStyle={styles.additionalIncomeOutcome}>
-          <Feather name="chevrons-up" size={36} color="red"/>
+          <Feather name="chevrons-up" size={36} color="red" />
           <Text style={styles.textHeadingStyle}>Outcome:</Text>
           <Text style={[styles.textStyle, { fontSize: 14 }]}>
             {" "}
@@ -126,9 +150,10 @@ export default SummaryCard = () => {
               minimumFractionDigits: 0,
             }).format(outcomeSummary)}
           </Text>
+          <View style={styles.box}>
+            <View style = {[styles.boxDalam, { width: `${40}%`}]}></View>
+          </View>
         </Cards>
-      </View>
     </View>
   );
 };
-

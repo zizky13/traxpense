@@ -1,44 +1,34 @@
-import {Text, View, StyleSheet, SafeAreaView, Dimensions} from 'react-native';
-import { BarChart, LineChart } from "react-native-chart-kit";
+import { Text, View, StyleSheet, Dimensions } from "react-native";
+import { useState, useEffect } from "react";
+import { SafeAreaView } from "react-native-safe-area-context";
+import SummaryCard from "../components/SummaryCard";
+// import { vertexAI } from "../firebase";
+// import { getGenerativeModel } from "firebase/vertexai-preview";
 
 export default ReportScreen = () => {
-    const screenWidth = Dimensions.get("window").width;
-    const data = {
-      labels: ["January", "February", "March", "April", "May", "June"],
-      datasets: [
-        {
-          data: [20, 45, 28, 80, 99, 43],
-        },
-      ],
-    };
 
-    return (
-      <SafeAreaView>
-        <BarChart
-          style={styles.graphStyle}
-          data={data}
-          width={screenWidth}
-          height={220}
-          yAxisLabel="Rp. "
-          showValuesOnTopOfBars={true}
-          withHorizontalLabels={false}
-          withInnerLines={false}
-          chartConfig={{
-            backgroundColor: "#000000",
-            backgroundGradientFrom: "#000000",
-            backgroundGradientTo: "#ffa726",
-            decimalPlaces: 0, // optional, defaults to 2dp
-            color: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
-            labelColor: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
-          }}
-        />
-      </SafeAreaView>
-    );
-}
+  // const model = getGenerativeModel(vertexAI, {
+  //   model: "gemini-1.5-pro-preview-0409",
+  // });
+  // const prompt = "Tell me signature dish of Indonesia";
+
+  // useEffect(() => {
+  //   model.generateContent(prompt).then((result) => {
+  //     setData(result.response.text);
+  //   });
+  // }, []);
+
+  return (
+    <SafeAreaView style={{flex: 1}}>
+        <SummaryCard />
+    </SafeAreaView>
+  );
+};
 
 const styles = StyleSheet.create({
   graphStyle: {
     margin: 8,
     borderRadius: 16,
+    borderWidth: 1,
   },
 });

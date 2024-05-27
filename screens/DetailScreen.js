@@ -4,8 +4,8 @@ import { auth, db } from "../firebase";
 import { ref, onValue, remove } from "firebase/database";
 import MyButton from "../components/MyButton";
 import { useNavigation } from "@react-navigation/native";
-import moment from "moment";
 import { GlobalStyles } from "../constants/GlobalStyles";
+import dayjs from "dayjs";
 
 
 export default DetailScreen = ({ route }) => {
@@ -25,9 +25,11 @@ export default DetailScreen = ({ route }) => {
       setExpenses(expensesArray);
     });
   }, []);
-  const renderedData = expenses.filter((item) => item.category === category);const renderedDataByDate = [...expenses].sort(
-    (a, b) => moment(b.date, "M/DD/YYYY") - moment(a.date, "M/DD/YYYY")
+  const renderedData = expenses.filter((item) => item.category === category);
+  const renderedDataByDate = expenses.sort(
+    (a, b) => dayjs(b.date, "M/DD/YYYY") - dayjs(a.date, "M/DD/YYYY")
   );
+
   
   const addScreenHandler = () => {
     if (path === "AddIncome") {

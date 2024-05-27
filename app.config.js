@@ -17,11 +17,13 @@ export default {
     ios: {
       supportsTablet: true,
     },
+
     android: {
       adaptiveIcon: {
         foregroundImage: "./assets/adaptive-icon.png",
         backgroundColor: "#ffffff",
       },
+      package: "com.example.expense_tracker_v2",
     },
     web: {
       favicon: "./assets/favicon.png",
@@ -34,6 +36,9 @@ export default {
       firebaseMessagingSenderId: process.env.FIREBASE_MESSAGING_SENDER_ID,
       firebaseAppId: process.env.FIREBASE_APP_ID,
       firebaseMeasurementId: process.env.FIREBASE_MEASUREMENT_ID,
+      eas: {
+        projectId: "d299656e-9403-4d95-a656-b4922e093545",
+      },
     },
   },
 };

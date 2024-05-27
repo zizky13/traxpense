@@ -93,9 +93,6 @@ export default HomeScreen = () => {
           onPress={signOutUser}
         />
       </View>
-      <View style={styles.summaryContainer}>
-        <SummaryCard />
-      </View>
 
       <View style={styles.expenseListContainer}>
         <FlatList

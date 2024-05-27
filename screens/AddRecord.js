@@ -87,11 +87,11 @@ export default AddRecord = () => {
         if (snapshot.exists()) {
           if (route.name === "AddIncome") {
             update(ref(db, "users/" + userId), {
-              outcomeSummary: snapshot.val().outcomeSummary + amount,
+              incomeSummary: snapshot.val().incomeSummary + amount,
             });
           } else {
             update(ref(db, "users/" + userId), {
-              incomeSummary: snapshot.val().incomeSummary + amount,
+              outcomeSummary: snapshot.val().outcomeSummary + amount,
             });
           }
         } else {

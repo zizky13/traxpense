@@ -17,8 +17,10 @@ import MyButton from "../components/MyButton";
 import { GlobalStyles } from "../constants/GlobalStyles";
 import { set, ref } from "firebase/database";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { useNavigation } from "@react-navigation/native";
 
 export default SignUpScreen = () => {
+  const navigation = useNavigation();
   const initialState = {
     email: "",
     password: "",
@@ -150,6 +152,14 @@ export default SignUpScreen = () => {
     }
   };
 
+  const rupiahConvert = (text) => {
+    return new Intl.NumberFormat("id-ID", {
+      style: "currency",
+      currency: "IDR",
+      minimumFractionDigits: 0,
+    }).format(text);
+  };
+
   const balanceHandler = (balance) => {
     dispatch({ type: "BALANCE", payload: balance });
     if (balance < 0) {
@@ -190,7 +200,7 @@ export default SignUpScreen = () => {
                 style={styles.input}
                 placeholder="Email"
                 onChangeText={emailHandler}
-                keyboardType='email-address'
+                keyboardType="email-address"
               />
               {state.emailValidMessage !== "" && (
                 <View style={styles.errorContainer}>
@@ -246,7 +256,11 @@ export default SignUpScreen = () => {
               <TextInput
                 style={styles.input}
                 placeholder="Balance"
-                onChangeText={(text) => balanceHandler(Number(text))}
+                value={rupiahConvert(state.balance)}
+                onChangeText={(text) => {
+                  const numericText = text.replace(/[^0-9]/g, "");
+                  balanceHandler(Number(numericText));
+                }}
                 keyboardType="numeric"
               />
               {state.balanceValidMessage !== "" && (
@@ -261,6 +275,8 @@ export default SignUpScreen = () => {
           <View style={styles.buttonContainer}>
             <MyButton
               title="Sign Up"
+              textStyle={{ color: GlobalStyles.colors.neutral100 }}
+              optionalColor={GlobalStyles.colors.primary200}
               onPress={() => signUp(state.email, state.password)}
             />
           </View>

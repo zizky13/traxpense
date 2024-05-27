@@ -6,6 +6,7 @@ import {
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { getDatabase, onValue } from "firebase/database";
 import { useEffect, useState } from "react";
+// import { getVertexAI } from "firebase/vertexai-preview";
 
 const firebaseConfig = {
   apiKey: "AIzaSyCDho8TGp_u5XREaD-A8xlIpnT4waUK9Ek",
@@ -39,3 +40,4 @@ export function useDatabaseData(dbref) {
 
   return databaseData;
 }
+// export const vertexAI = getVertexAI(app);

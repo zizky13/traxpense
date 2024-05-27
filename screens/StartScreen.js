@@ -64,15 +64,17 @@ export default StartScreen = () => {
         />
         <MyButton
           style={styles.button}
-          optionalColor={GlobalStyles.colors.primary500}
+          optionalColor={GlobalStyles.colors.primary200}
           title="Login"
+          textStyle={{ color: GlobalStyles.colors.neutral100 }}
           onPress={() => login(email, password)}
         />
         <Text>Or</Text>
         <MyButton
           style={styles.button}
-          optionalColor={GlobalStyles.colors.accent400}
+          optionalColor={GlobalStyles.colors.accent200}
           title="Sign Up"
+          textStyle={{ color: GlobalStyles.colors.neutral100 }}
           onPress={() => navigation.navigate("SignUp")}
         />
       </View>
