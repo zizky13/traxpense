@@ -75,10 +75,10 @@ export default SignUpScreen = () => {
           balance: state.balance,
           username: state.username,
           password: state.password,
-          expenses: "",
+          expenses: "placeholder", //add placeholder supaya expenses exist
           incomeSummary: 0,
           outcomeSummary: 0,
-        });
+        }).catch((error) => console.error("Error setting data:", error));
 
         Alert.alert(
           "Success",
@@ -316,12 +316,12 @@ const styles = StyleSheet.create({
     flexDirection: "row",
   },
 
-  headingContainer:{
+  headingContainer: {
     margin: 8,
   },
 
   heading: {
     fontFamily: "Inter-Bold",
     fontSize: 24,
-  }
+  },
 });

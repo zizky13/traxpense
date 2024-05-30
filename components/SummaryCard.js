@@ -17,7 +17,7 @@ export default SummaryCard = () => {
   const [outcomeSummary, setOutcomeSummary] = useState(0);
   const [savings, setSavings] = useState(0);
   const savingsPercentage =
-    incomeSummary !== 0 ? (savings / incomeSummary) * 100 : 0;
+    incomeSummary !== 0 ? Math.floor((savings / incomeSummary) * 100) : 0;
 
   const styles = StyleSheet.create({
     outerContainer: {

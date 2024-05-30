@@ -59,15 +59,44 @@ export default DetailScreen = ({ route }) => {
       const recordSnapshot = await get(recordRef);
       const record = recordSnapshot.val();
       const amount = record ? record.amount : 0;
-      let newBalance = 0;
+      let newBalance = 0,
+        newIncomeSummary = 0,
+        newOutcomeSummary = 0;
+
+      //FETCH EXPENSES
+      const expensesRef = ref(db, "users/" + userId + "/expenses");
+      const expensesSnapshot = await get(expensesRef);
+      const expenses = expensesSnapshot.val();
+
+      // If the current record is the only one, add a placeholder record
+      // PREVENTS e error
+      if (expenses && Object.keys(expenses).length === 1) {
+        const placeholderRef = ref(
+          db,
+          "users/" + userId + "/expenses/placeholder"
+        );
+        await set(placeholderRef, { amount: 0 });
+      }
 
       // Subtract the amount from the current balance and update the balance in the database
-      if (path === "AddIncome") { //check current path, if its income, then we subtract the current balance to amount
+      if (path === "AddIncome") {
+        //check current path, if its income, then we subtract the current balance to amount
         newBalance = dbdata.balance - amount;
-      } else if (path === "AddExpense") { //otherwise
+        newIncomeSummary = dbdata.incomeSummary - amount;
+      } else if (path === "AddExpense") {
+        //otherwise
         newBalance = dbdata.balance + amount;
+        newOutcomeSummary = dbdata.outcomeSummary - amount;
       }
       await set(ref(db, "users/" + userId + "/balance"), newBalance);
+      await set(
+        ref(db, "users/" + userId + "/incomeSummary"),
+        newIncomeSummary
+      );
+      await set(
+        ref(db, "users/" + userId + "/outcomeSummary"),
+        newOutcomeSummary
+      );
 
       // Remove the record
       await remove(recordRef);
