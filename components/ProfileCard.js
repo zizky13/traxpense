@@ -1,5 +1,5 @@
 import { View, Text, StyleSheet } from "react-native";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import MyButton from "../components/MyButton";
 import { signOut } from "firebase/auth";
 import Cards from "../components/Cards";
@@ -9,6 +9,7 @@ import { useNavigation } from "@react-navigation/native";
 
 export default ProfileCard = ({ dbdata }) => {
   const navigation = useNavigation();
+
   const signOutUser = async () => {
     try {
       await signOut(auth);
@@ -37,6 +38,7 @@ export default ProfileCard = ({ dbdata }) => {
           />
         </View>
 
+        <Text style={styles.textStyle}>Total Balance</Text>
         <Text>
           {new Intl.NumberFormat("id-ID", {
             style: "currency",
@@ -69,5 +71,11 @@ const styles = StyleSheet.create({
     backgroundColor: GlobalStyles.colors.neutral100,
     margin: 3,
     flex: 1,
+  },
+
+  textStyle: {
+    fontFamily: "Inter-Regular",
+    fontSize: 16,
+    color: GlobalStyles.colors.neutral800,
   },
 });

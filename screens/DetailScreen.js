@@ -6,8 +6,8 @@ import {
   StyleSheet,
 } from "react-native";
 import { useState, useEffect } from "react";
-import { auth, db } from "../firebase";
-import { ref, onValue, remove } from "firebase/database";
+import { auth, db, useDatabaseData } from "../firebase";
+import { ref, onValue, remove, get, set } from "firebase/database";
 import MyButton from "../components/MyButton";
 import { useNavigation } from "@react-navigation/native";
 import { GlobalStyles } from "../constants/GlobalStyles";
@@ -17,6 +17,7 @@ export default DetailScreen = ({ route }) => {
   const { category, path } = route.params;
   const [expenses, setExpenses] = useState([]);
   const userId = auth.currentUser?.uid;
+  const dbdata = useDatabaseData(ref(db, "users/" + userId));
   const navigation = useNavigation();
 
   useEffect(() => {
@@ -36,7 +37,6 @@ export default DetailScreen = ({ route }) => {
   );
 
   const addScreenHandler = () => {
-    console.log(process.env.REACT_APP_API_KEY);
     if (path === "AddIncome") {
       navigation.navigate("AddIncome", { cat: category });
     } else if (path === "AddExpense") {
@@ -52,8 +52,28 @@ export default DetailScreen = ({ route }) => {
     });
   };
 
-  const deleteHandler = (id) => {
-    remove(ref(db, "users/" + userId + "/expenses/" + id));
+  const deleteHandler = async (id) => {
+    try {
+      // Fetch the amount of the record
+      const recordRef = ref(db, "users/" + userId + "/expenses/" + id);
+      const recordSnapshot = await get(recordRef);
+      const record = recordSnapshot.val();
+      const amount = record ? record.amount : 0;
+      let newBalance = 0;
+
+      // Subtract the amount from the current balance and update the balance in the database
+      if (path === "AddIncome") { //check current path, if its income, then we subtract the current balance to amount
+        newBalance = dbdata.balance - amount;
+      } else if (path === "AddExpense") { //otherwise
+        newBalance = dbdata.balance + amount;
+      }
+      await set(ref(db, "users/" + userId + "/balance"), newBalance);
+
+      // Remove the record
+      await remove(recordRef);
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   const editHandler = (id) => {
@@ -71,75 +91,40 @@ export default DetailScreen = ({ route }) => {
         title="Add Record"
         onPress={addScreenHandler}
       />
-      {category === "By Date" ? (
-        <FlatList
-          data={renderedDataByDate}
-          renderItem={({ item }) => (
-            <View style={styles.recordContainer}>
-              <Text style={styles.dateText}>{item.date}</Text>
 
-              <TouchableOpacity style={styles.recordDetails}>
-                <Text style={styles.recordText}>
-                  {rupiahConverter(item.amount)}
-                </Text>
-                <Text style={styles.recordText}>{item.description}</Text>
-              </TouchableOpacity>
+      <FlatList
+        data={renderedData}
+        renderItem={({ item }) => (
+          <View style={styles.recordContainer}>
+            <Text style={styles.dateText}>{item.date}</Text>
 
-              <View style={styles.buttonContainer}>
-                <MyButton
-                  title="Edit"
-                  textStyle={{ color: GlobalStyles.colors.neutral100 }}
-                  optionalColor={GlobalStyles.colors.primary300}
-                  onPress={() => {
-                    editHandler(item.id);
-                  }}
-                />
-                <MyButton
-                  title="Delete"
-                  textStyle={{ color: GlobalStyles.colors.neutral100 }}
-                  optionalColor={GlobalStyles.colors.error}
-                  onPress={() => deleteHandler(item.id)}
-                />
-              </View>
+            <TouchableOpacity style={styles.recordDetails}>
+              <Text style={styles.recordText}>
+                {rupiahConverter(item.amount)}
+              </Text>
+              <Text style={styles.recordText}>{item.description}</Text>
+            </TouchableOpacity>
+
+            <View style={styles.buttonContainer}>
+              <MyButton
+                title="Edit"
+                textStyle={{ color: GlobalStyles.colors.neutral100 }}
+                optionalColor={GlobalStyles.colors.primary300}
+                onPress={() => {
+                  editHandler(item.id);
+                }}
+              />
+              <MyButton
+                title="Delete"
+                textStyle={{ color: GlobalStyles.colors.neutral100 }}
+                optionalColor={GlobalStyles.colors.error}
+                onPress={() => deleteHandler(item.id)}
+              />
             </View>
-          )}
-          keyExtractor={(item) => item.id}
-        />
-      ) : (
-        <FlatList
-          data={renderedData}
-          renderItem={({ item }) => (
-            <View style={styles.recordContainer}>
-              <Text style={styles.dateText}>{item.date}</Text>
-
-              <TouchableOpacity style={styles.recordDetails}>
-                <Text style={styles.recordText}>
-                  {rupiahConverter(item.amount)}
-                </Text>
-                <Text style={styles.recordText}>{item.description}</Text>
-              </TouchableOpacity>
-
-              <View style={styles.buttonContainer}>
-                <MyButton
-                  title="Edit"
-                  textStyle={{ color: GlobalStyles.colors.neutral100 }}
-                  optionalColor={GlobalStyles.colors.primary300}
-                  onPress={() => {
-                    editHandler(item.id);
-                  }}
-                />
-                <MyButton
-                  title="Delete"
-                  textStyle={{ color: GlobalStyles.colors.neutral100 }}
-                  optionalColor={GlobalStyles.colors.error}
-                  onPress={() => deleteHandler(item.id)}
-                />
-              </View>
-            </View>
-          )}
-          keyExtractor={(item) => item.id}
-        />
-      )}
+          </View>
+        )}
+        keyExtractor={(item) => item.id}
+      />
     </View>
   );
 };

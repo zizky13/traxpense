@@ -1,5 +1,4 @@
 import { Text, View, StyleSheet, Dimensions } from "react-native";
-import { useState, useEffect } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import SummaryCard from "../components/SummaryCard";
 

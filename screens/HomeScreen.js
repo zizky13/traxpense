@@ -1,4 +1,4 @@
-import { View, StyleSheet, FlatList, BackHandler, ActivityIndicator } from "react-native";
+import { View, StyleSheet, FlatList, BackHandler, Text } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useContext, useEffect, useState } from "react";
 import { ExpenseContext } from "../store/expense-context";
@@ -44,8 +44,6 @@ export default HomeScreen = () => {
     return () => backHandler.remove(); // Remove the event listener when the component unmounts
   }, []);
 
-  
-
   let categoriesData,
     path,
     data = [];
@@ -68,15 +66,12 @@ export default HomeScreen = () => {
     }));
   }
 
-
   return (
     <SafeAreaView style={styles.outerContainer}>
       <View style={styles.expenseListContainer}>
         <FlatList
           data={data}
-          ListFooterComponent={
-            <ProfileCard dbdata={dbdata} />
-          }
+          ListHeaderComponent={<ProfileCard dbdata={dbdata} />}
           renderItem={({ item }) => (
             <CategoryGrid
               title={item.title}
@@ -91,7 +86,6 @@ export default HomeScreen = () => {
           )}
           keyExtractor={(item) => item.title}
           numColumns={2}
-          inverted={true}
         />
       </View>
     </SafeAreaView>
@@ -112,14 +106,13 @@ const styles = StyleSheet.create({
     flex: 1,
   },
 
-
   loadingContainer: {
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
   },
 
-  username:{
-    borderColor: GlobalStyles.colors.neutral500
-  }
+  username: {
+    borderColor: GlobalStyles.colors.neutral500,
+  },
 });
