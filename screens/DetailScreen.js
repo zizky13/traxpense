@@ -1,4 +1,10 @@
-import { View, Text, FlatList, TouchableOpacity, StyleSheet } from "react-native";
+import {
+  View,
+  Text,
+  FlatList,
+  TouchableOpacity,
+  StyleSheet,
+} from "react-native";
 import { useState, useEffect } from "react";
 import { auth, db } from "../firebase";
 import { ref, onValue, remove } from "firebase/database";
@@ -6,7 +12,6 @@ import MyButton from "../components/MyButton";
 import { useNavigation } from "@react-navigation/native";
 import { GlobalStyles } from "../constants/GlobalStyles";
 import dayjs from "dayjs";
-
 
 export default DetailScreen = ({ route }) => {
   const { category, path } = route.params;
@@ -30,14 +35,14 @@ export default DetailScreen = ({ route }) => {
     (a, b) => dayjs(b.date, "M/DD/YYYY") - dayjs(a.date, "M/DD/YYYY")
   );
 
-  
   const addScreenHandler = () => {
+    console.log(process.env.REACT_APP_API_KEY);
     if (path === "AddIncome") {
       navigation.navigate("AddIncome", { cat: category });
     } else if (path === "AddExpense") {
       navigation.navigate("AddExpense", { cat: category });
     }
-  }
+  };
 
   const rupiahConverter = (amount) => {
     return amount.toLocaleString("id-ID", {
@@ -45,15 +50,15 @@ export default DetailScreen = ({ route }) => {
       currency: "IDR",
       minimumFractionDigits: 0,
     });
-  }
+  };
 
   const deleteHandler = (id) => {
     remove(ref(db, "users/" + userId + "/expenses/" + id));
-  }
+  };
 
   const editHandler = (id) => {
     navigation.navigate("AddIncome", { id: id });
-  }
+  };
 
   return (
     <View>
@@ -142,7 +147,7 @@ export default DetailScreen = ({ route }) => {
 const styles = StyleSheet.create({
   recordContainer: {
     flexDirection: "row",
-    flex:1,
+    flex: 1,
     justifyContent: "space-between",
     alignItems: "center",
     padding: 10,
@@ -160,7 +165,7 @@ const styles = StyleSheet.create({
   recordDetails: {
     justifyContent: "center",
     alignItems: "center",
-    paddingHorizontal: 8
+    paddingHorizontal: 8,
   },
 
   recordText: {
@@ -180,4 +185,4 @@ const styles = StyleSheet.create({
     fontSize: 20,
     margin: 10,
   },
-})
+});
