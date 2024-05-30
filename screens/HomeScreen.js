@@ -1,16 +1,13 @@
-import { View, Text, StyleSheet, FlatList, BackHandler, ActivityIndicator } from "react-native";
+import { View, StyleSheet, FlatList, BackHandler, ActivityIndicator } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import Cards from "../components/Cards";
 import { useContext, useEffect, useState } from "react";
-import SummaryCard from "../components/SummaryCard";
 import { ExpenseContext } from "../store/expense-context";
 import CategoryGrid from "../components/CategoryGrid";
 import { useNavigation, useRoute } from "@react-navigation/native";
-import { signOut } from "firebase/auth";
 import { auth, useDatabaseData, db } from "../firebase";
 import { GlobalStyles } from "../constants/GlobalStyles";
 import { ref } from "firebase/database";
-import MyButton from "../components/MyButton";
+import ProfileCard from "../components/ProfileCard";
 
 export default HomeScreen = () => {
   const navigation = useNavigation();
@@ -47,15 +44,7 @@ export default HomeScreen = () => {
     return () => backHandler.remove(); // Remove the event listener when the component unmounts
   }, []);
 
-  const signOutUser = async () => {
-    try {
-      await signOut(auth);
-      alert("User signed out successfully!");
-      navigation.navigate("Start");
-    } catch (error) {
-      alert(error.message);
-    }
-  };
+  
 
   let categoriesData,
     path,
@@ -82,21 +71,12 @@ export default HomeScreen = () => {
 
   return (
     <SafeAreaView style={styles.outerContainer}>
-      <View style={styles.profilecontainer}>
-        <Cards additionalStyle={styles.username}>
-          <Text style={styles.textStyle}>Hello, {dbdata.username}</Text>
-        </Cards>
-        <MyButton
-          optionalColor={GlobalStyles.colors.error}
-          textStyle={{ color: GlobalStyles.colors.neutral100, fontSize: 12 }}
-          title="Sign Out"
-          onPress={signOutUser}
-        />
-      </View>
-
       <View style={styles.expenseListContainer}>
         <FlatList
           data={data}
+          ListFooterComponent={
+            <ProfileCard dbdata={dbdata} />
+          }
           renderItem={({ item }) => (
             <CategoryGrid
               title={item.title}
@@ -128,23 +108,10 @@ const styles = StyleSheet.create({
     fontSize: 12,
   },
 
-  summaryContainer: {
-    borderWidth: 1,
-    borderRadius: 10,
-    borderColor: GlobalStyles.colors.neutral500,
-    backgroundColor: GlobalStyles.colors.neutral100,
-    margin: 3,
-  },
-
   expenseListContainer: {
     flex: 1,
   },
 
-  profilecontainer: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-  },
 
   loadingContainer: {
     flex: 1,

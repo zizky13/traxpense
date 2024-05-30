@@ -16,14 +16,15 @@ export default SummaryCard = () => {
   const [incomeSummary, setIncomeSummary] = useState(0);
   const [outcomeSummary, setOutcomeSummary] = useState(0);
   const [savings, setSavings] = useState(0);
-  const savingsPercentage = incomeSummary !== 0 ? (savings / incomeSummary) * 100 : 0;
-  
+  const savingsPercentage =
+    incomeSummary !== 0 ? (savings / incomeSummary) * 100 : 0;
+
   const styles = StyleSheet.create({
     outerContainer: {
       justifyContent: "center",
     },
-    
-    box:{
+
+    box: {
       marginVertical: 12,
       width: "100%",
       height: 10,
@@ -31,7 +32,7 @@ export default SummaryCard = () => {
       borderRadius: 12,
     },
 
-    boxDalam:{
+    boxDalam: {
       height: "100%",
       backgroundColor: "red",
       borderRadius: 2,
@@ -45,11 +46,10 @@ export default SummaryCard = () => {
     savingContainer: {
       justifyContent: "center",
       alignItems: "center",
+      paddingHorizontal: 8,
     },
 
     additional: {
-      height: windowHeight * 0.17,
-      width: windowWidth * 0.93,
       padding: 8,
       borderWidth: 1,
       borderColor: GlobalStyles.colors.neutral200,
@@ -110,50 +110,57 @@ export default SummaryCard = () => {
 
   return (
     <View style={styles.outerContainer}>
-      <View style={styles.savingContainer}>
-        <Cards additionalStyle={styles.additional}>
-          <Ionicons name="wallet" size={36} color="black" />
-          <Text style={styles.textHeadingStyle}>Total savings:</Text>
-          <Text style={styles.textStyle}>
-            {new Intl.NumberFormat("id-ID", {
-              style: "currency",
-              currency: "IDR",
-              minimumFractionDigits: 0,
-            }).format(savings)}
-          </Text>
-          <Text style={[styles.textStyle, { fontSize: 12 }]}>
-            Saved this month by: {savingsPercentage}%
-          </Text>
-        </Cards>
-      </View>
+      <Cards additionalStyle={styles.additional}>
+        <Ionicons name="wallet" size={36} color="black" />
+        <Text style={styles.textHeadingStyle}>Total savings:</Text>
+        <Text style={styles.textStyle}>
+          {new Intl.NumberFormat("id-ID", {
+            style: "currency",
+            currency: "IDR",
+            minimumFractionDigits: 0,
+          }).format(savings)}
+        </Text>
+        <Text style={[styles.textStyle, { fontSize: 12 }]}>
+          Saved this month by: {savingsPercentage}%
+        </Text>
+      </Cards>
 
-        <Cards additionalStyle={styles.additionalIncomeOutcome}>
-          <Feather name="chevrons-down" size={36} color="green" />
-          <Text style={styles.textHeadingStyle}>Income:</Text>
-          <Text style={[styles.textStyle, { fontSize: 14 }]}>
-            {" "}
-            {new Intl.NumberFormat("id-ID", {
-              style: "currency",
-              currency: "IDR",
-              minimumFractionDigits: 0,
-            }).format(incomeSummary)}
-          </Text>
-        </Cards>
-        <Cards additionalStyle={styles.additionalIncomeOutcome}>
-          <Feather name="chevrons-up" size={36} color="red" />
-          <Text style={styles.textHeadingStyle}>Outcome:</Text>
-          <Text style={[styles.textStyle, { fontSize: 14 }]}>
-            {" "}
-            {new Intl.NumberFormat("id-ID", {
-              style: "currency",
-              currency: "IDR",
-              minimumFractionDigits: 0,
-            }).format(outcomeSummary)}
-          </Text>
-          <View style={styles.box}>
-            <View style = {[styles.boxDalam, { width: `${40}%`}]}></View>
+      <Cards additionalStyle={styles.additionalIncomeOutcome}>
+        <Feather name="chevrons-down" size={36} color="green" />
+        <Text style={styles.textHeadingStyle}>Income:</Text>
+        <Text style={[styles.textStyle, { fontSize: 14 }]}>
+          {" "}
+          {new Intl.NumberFormat("id-ID", {
+            style: "currency",
+            currency: "IDR",
+            minimumFractionDigits: 0,
+          }).format(incomeSummary)}
+        </Text>
+        <View style={styles.box}>
+          <View style={[styles.boxDalam, { width: `${40}%`, backgroundColor: 'green' }]}>
+            <Text>50%</Text>
           </View>
-        </Cards>
+        </View>
+      </Cards>
+
+      <Cards additionalStyle={styles.additionalIncomeOutcome}>
+        <Feather name="chevrons-up" size={36} color="red" />
+        <Text style={styles.textHeadingStyle}>Outcome:</Text>
+        <Text style={[styles.textStyle, { fontSize: 14 }]}>
+          {" "}
+          {new Intl.NumberFormat("id-ID", {
+            style: "currency",
+            currency: "IDR",
+            minimumFractionDigits: 0,
+          }).format(outcomeSummary)}
+        </Text>
+
+        <View style={styles.box}>
+          <View style={[styles.boxDalam, { width: `${40}%` }]}>
+            <Text>50%</Text>
+          </View>
+        </View>
+      </Cards>
     </View>
   );
 };

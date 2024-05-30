@@ -33,6 +33,7 @@ export default StartScreen = () => {
       .then((userCredential) => {
         alert("User signed in successfully!");
         const user = userCredential.user;
+        navigation.navigate("Home");
       })
       .catch((error) => {
         alert(error.message);

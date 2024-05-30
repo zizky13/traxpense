@@ -83,7 +83,7 @@ export default SignUpScreen = () => {
         Alert.alert(
           "Success",
           "User created successfully!",
-          [{ text: "OK", onPress: () => navigation.goBack() }],
+          [{ text: "OK", onPress: () => navigation.navigate("Home") }],
           { cancelable: false }
         );
       })

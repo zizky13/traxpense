@@ -14,6 +14,7 @@ import AddRecord from "./screens/AddRecord";
 import ReportScreen from "./screens/ReportScreen";
 import { MaterialIcons } from "@expo/vector-icons";
 
+
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
 
