@@ -73,6 +73,7 @@ export default SignUpScreen = () => {
 
         set(ref(db, "users/" + user.uid), {
           balance: state.balance,
+          startingBalance: state.balance,
           username: state.username,
           password: state.password,
           expenses: "placeholder", //add placeholder supaya expenses exist

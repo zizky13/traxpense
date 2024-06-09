@@ -16,6 +16,7 @@ export default SummaryCard = () => {
   const [incomeSummary, setIncomeSummary] = useState(0);
   const [outcomeSummary, setOutcomeSummary] = useState(0);
   const [savings, setSavings] = useState(0);
+  const [endBalance, setEndBalance] = useState(0);
   const savingsPercentage =
     incomeSummary !== 0 ? Math.floor((savings / incomeSummary) * 100) : 0;
 
@@ -95,7 +96,7 @@ export default SummaryCard = () => {
       fontSize: 16,
     },
   });
-  const startingBalance = dbdata.balance;
+  const startingBalance = dbdata.startingBalance;
 
   useEffect(() => {
     if (
@@ -104,7 +105,12 @@ export default SummaryCard = () => {
     ) {
       setIncomeSummary(dbdata.incomeSummary);
       setOutcomeSummary(dbdata.outcomeSummary);
-      setSavings(dbdata.incomeSummary - dbdata.outcomeSummary);
+      setEndBalance(
+        startingBalance + (dbdata.incomeSummary - dbdata.outcomeSummary)
+      );
+
+      setSavings(endBalance - startingBalance);
+      //potential bug here
     }
   }, [dbdata]);
 
@@ -137,7 +143,12 @@ export default SummaryCard = () => {
           }).format(incomeSummary)}
         </Text>
         <View style={styles.box}>
-          <View style={[styles.boxDalam, { width: `${40}%`, backgroundColor: 'green' }]}>
+          <View
+            style={[
+              styles.boxDalam,
+              { width: `${40}%`, backgroundColor: "green" },
+            ]}
+          >
             <Text>50%</Text>
           </View>
         </View>

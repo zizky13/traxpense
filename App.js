@@ -39,7 +39,14 @@ const NewHome = () => {
         }
       
       }/>
-      <Tab.Screen name="Report" component={ReportScreen} />
+      <Tab.Screen name="Report" component={ReportScreen} options={
+        {
+          tabBarIcon: ({ color }) => (
+            <MaterialIcons name="insert-chart" size={24} color={color} />
+          ),
+        }
+      
+      }/>
     </Tab.Navigator>
   );
 }
