@@ -142,16 +142,6 @@ export default SummaryCard = () => {
             minimumFractionDigits: 0,
           }).format(incomeSummary)}
         </Text>
-        <View style={styles.box}>
-          <View
-            style={[
-              styles.boxDalam,
-              { width: `${40}%`, backgroundColor: "green" },
-            ]}
-          >
-            <Text>50%</Text>
-          </View>
-        </View>
       </Cards>
 
       <Cards additionalStyle={styles.additionalIncomeOutcome}>
@@ -165,12 +155,6 @@ export default SummaryCard = () => {
             minimumFractionDigits: 0,
           }).format(outcomeSummary)}
         </Text>
-
-        <View style={styles.box}>
-          <View style={[styles.boxDalam, { width: `${40}%` }]}>
-            <Text>50%</Text>
-          </View>
-        </View>
       </Cards>
     </View>
   );
