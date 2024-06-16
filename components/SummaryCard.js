@@ -109,7 +109,7 @@ export default SummaryCard = () => {
         startingBalance + (dbdata.incomeSummary - dbdata.outcomeSummary)
       );
 
-      setSavings(endBalance - startingBalance);
+      setSavings(0);
       //potential bug here
     }
   }, [dbdata]);

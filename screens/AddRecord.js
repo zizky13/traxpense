@@ -85,14 +85,32 @@ export default AddRecord = () => {
     get(ref(db, "users/" + userId))
       .then((snapshot) => {
         if (snapshot.exists()) {
+          let totalExpenses = 0;
+          let totalIncome = 0;
+          const expenses = snapshot.val().expenses;
+          for (let key in expenses) {
+            if (
+              expenses[key].category === "Savings" ||
+              expenses[key].category === "Paycheck" ||
+              expenses[key].category === "Bonus" ||
+              expenses[key].category === "Interest"
+            ) {
+              totalIncome += expenses[key].amount;
+              console.log("Income: ", totalIncome);
+            } else {
+              totalExpenses += expenses[key].amount;
+              console.log("Expenses: ", totalExpenses);
+            }
+          }
+
           if (route.name === "AddIncome") {
             update(ref(db, "users/" + userId), {
-              incomeSummary: snapshot.val().incomeSummary + amount,
-              balance: snapshot.val().balance + amount
+              incomeSummary: totalIncome,
+              balance: snapshot.val().balance + amount,
             });
           } else {
             update(ref(db, "users/" + userId), {
-              outcomeSummary: snapshot.val().outcomeSummary + amount,
+              outcomeSummary: totalExpenses,
               balance: snapshot.val().balance - amount,
             });
           }
@@ -105,7 +123,15 @@ export default AddRecord = () => {
       });
   };
 
-  const editRecord = () => {
+  const editRecord = async () => {
+    const previousAmountRef = ref(
+      db,
+      "users/" + userId + "/expenses/" + itemId + "/amount"
+    );
+    const snapshot = await get(previousAmountRef);
+    const previousAmount = snapshot.val();
+    console.log("Previous amount: ", previousAmount);
+
     const editRecordRef = set(
       ref(db, "users/" + userId + "/expenses/" + itemId),
       {
@@ -116,12 +142,49 @@ export default AddRecord = () => {
       }
     );
 
-    editRecordRef.then(() => {
-      alert("Record edited successfully!");
-      setDescription("");
-      setAmount(0);
-      setCategory("");
-    });
+    await editRecordRef;
+
+    alert("Record edited successfully!");
+    setDescription("");
+    setAmount(0);
+    setCategory("");
+
+    const userRef = ref(db, "users/" + userId);
+    const userSnapshot = await get(userRef);
+
+    if (userSnapshot.exists()) {
+      let totalExpenses = 0;
+      let totalIncome = 0;
+      const expenses = userSnapshot.val().expenses;
+      for (let key in expenses) {
+        if (
+          expenses[key].category === "Savings" ||
+          expenses[key].category === "Paycheck" ||
+          expenses[key].category === "Bonus" ||
+          expenses[key].category === "Interest"
+        ) {
+          totalIncome += expenses[key].amount;
+          console.log("Income: ", totalIncome);
+        } else {
+          totalExpenses += expenses[key].amount;
+          console.log("Expenses: ", totalExpenses);
+        }
+      }
+
+      if (route.name === "AddIncome") {
+        update(userRef, {
+          incomeSummary: totalIncome,
+          balance: userSnapshot.val().balance - previousAmount + amount,
+        });
+      } else {
+        update(userRef, {
+          outcomeSummary: totalExpenses,
+          balance: userSnapshot.val().balance - previousAmount + amount,
+        });
+      }
+    } else {
+      console.log("No data available");
+    }
   };
 
   const rupiahConvert = (text) => {
@@ -144,7 +207,7 @@ export default AddRecord = () => {
           setAmount(Number(numericText));
         }}
         keyboardType="numeric"
-      />  
+      />
       <TextInput
         style={styles.textInput}
         placeholder="Description"

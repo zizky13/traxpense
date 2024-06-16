@@ -60,8 +60,8 @@ export default DetailScreen = ({ route }) => {
       const record = recordSnapshot.val();
       const amount = record ? record.amount : 0;
       let newBalance = 0,
-        newIncomeSummary = 0,
-        newOutcomeSummary = 0;
+        newIncomeSummary = dbdata.incomeSummary,
+        newOutcomeSummary = dbdata.outcomeSummary;
 
       //FETCH EXPENSES
       const expensesRef = ref(db, "users/" + userId + "/expenses");
@@ -82,11 +82,25 @@ export default DetailScreen = ({ route }) => {
       if (path === "AddIncome") {
         //check current path, if its income, then we subtract the current balance to amount
         newBalance = dbdata.balance - amount;
-        newIncomeSummary = dbdata.incomeSummary - amount;
+        // Only adjust the income summary if this is the last income record
+        if (
+          !Object.values(expenses).some(
+            (expense) => expense.category === "Income"
+          )
+        ) {
+          newIncomeSummary -= amount;
+        }
       } else if (path === "AddExpense") {
-        //otherwise
+        //otherwise, if it's an expense, we add the amount to the current balance
         newBalance = dbdata.balance + amount;
-        newOutcomeSummary = dbdata.outcomeSummary - amount;
+        // Only adjust the outcome summary if this is the last expense record
+        if (
+          !Object.values(expenses).some(
+            (expense) => expense.category === "Expense"
+          )
+        ) {
+          newOutcomeSummary -= amount;
+        }
       }
       await set(ref(db, "users/" + userId + "/balance"), newBalance);
       await set(
@@ -106,7 +120,11 @@ export default DetailScreen = ({ route }) => {
   };
 
   const editHandler = (id) => {
-    navigation.navigate("AddIncome", { id: id });
+    if (path === "AddExpense") {
+      navigation.navigate("AddExpense", { id: id });
+    } else if (path === "AddIncome") {
+      navigation.navigate("AddIncome", { id: id });
+    }
   };
 
   return (
